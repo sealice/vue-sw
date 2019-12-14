@@ -7,4 +7,7 @@ export const baseService = {
     login: (data, config) => {
         return axios.post('v1/login', data, merge({ emulateJSON: true }, config));
     },
+    getUser: config => {
+        return axios.get('v1/userInfo', merge({}, config));
+    },
 };
