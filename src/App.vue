@@ -1,16 +1,14 @@
 <template>
     <div id="app" v-show="display">
-        <template v-if="!$route.meta.layout && $route.meta.layout !== void 0">
-            <router-view />
-        </template>
-        <template v-else>
-            <!-- layout -->
+        <!-- layout -->
+        <template v-if="$route.meta.layout || $route.meta.layout === void 0">
             <div id="nav">
-                <router-link to="/">Home</router-link> |
-                <router-link to="/about">About</router-link>
+                <router-link to="/">Home</router-link> | <router-link to="/about">About</router-link> |
+                <router-link to="/about/bar">About Bar</router-link>
             </div>
-            <router-view />
         </template>
+
+        <router-view />
     </div>
 </template>
 

@@ -1,10 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import routes from './routes';
-import store from '../store';
-import * as types from '../store/types';
-
-Vue.use(VueRouter);
 
 const _routes = [];
 const _assign = Object.assign;
@@ -35,28 +31,9 @@ const _assign = Object.assign;
 
         children && disintegrationRoutes(children, path, requireAuth, keepAlive);
     });
-})(routes, '', false, false);
+})(routes, '', false);
 
-const router = new VueRouter({
+Vue.use(VueRouter);
+export default new VueRouter({
     routes: _routes,
 });
-
-// 路由拦截（前置守卫）
-router.beforeEach((to, from, next) => {
-    store.dispatch(types.LOGGED_INFO).then(isLogin => {
-        if (to.matched.some(record => record.meta.requireAuth)) {
-            if (isLogin) {
-                next();
-            } else {
-                next({
-                    name: 'login',
-                    query: { redirect: to.fullPath },
-                });
-            }
-        } else {
-            isLogin && to.name == 'login' ? next({ path: '/', replace: true }) : next();
-        }
-    });
-});
-
-export default router;

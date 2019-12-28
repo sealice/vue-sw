@@ -1,4 +1,4 @@
-const routes = [
+export default [
     {
         path: '/',
         name: 'home',
@@ -33,5 +33,3 @@ const routes = [
         components: require('../views/Login.vue'),
     },
 ];
-
-export default routes;
