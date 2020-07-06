@@ -1,13 +1,13 @@
-import axios from 'axios';
 import { merge } from 'axios/lib/utils';
+import { service } from '@/utils/request';
 
 // @config {headers, emulateJSON, loading, msg, errMsg, disableInterceptor}
 export const baseService = {
     // @data {username, password}
     login: (data, config) => {
-        return axios.post('v1/login', data, merge({ emulateJSON: true }, config));
+        return service.post('v1/login', data, merge({ emulateJSON: true }, config));
     },
     getUser: config => {
-        return axios.get('v1/userInfo', merge({}, config));
+        return service.get('v1/userInfo', merge({}, config));
     },
 };

@@ -37,7 +37,7 @@ export default new Vuex.Store({
             });
         },
         [types.LOGIN]({ state, commit }, data) {
-            return baseService.login(data, { disableInterceptor: true }).then(({ data }) => {
+            return baseService.login(data, { disableInterceptor: true }).then(data => {
                 commit(types.LOGGED_INFO, data);
                 return true;
             });

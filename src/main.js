@@ -1,13 +1,9 @@
 import Vue from 'vue';
 import App from './App.vue';
-import filter from './filter';
 import router from './router';
 import store from './store';
 import * as types from './store/types';
 import './registerServiceWorker';
-import './service';
-
-Vue.use(filter);
 
 // 路由拦截（前置守卫）
 router.beforeEach((to, from, next) => {
@@ -26,6 +22,14 @@ router.beforeEach((to, from, next) => {
         }
     });
 });
+
+// 过滤器
+import filter from './filter';
+Vue.use(filter);
+
+// 公共Vue实例，用于数据通信
+import Bus from '@/utils/bus.js';
+Vue.use(Bus);
 
 new Vue({
     store,
