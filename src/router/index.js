@@ -2,38 +2,44 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import routes from './routes';
 
-const _routes = [];
 const _assign = Object.assign;
-(function disintegrationRoutes(routes, parentPath, auth, alive) {
-    routes.forEach(route => {
-        let { path, children, meta = {} } = route;
-        let { requireAuth, keepAlive } = meta;
 
-        if (!requireAuth) {
-            requireAuth = auth;
-        }
+function disintegrationRoutes(routes, parentPath = '', auth = false) {
+    const _routes = [];
 
-        if (keepAlive === void 0) {
-            keepAlive = alive;
-        }
+    (function _disintegrationRoutes(routes, parentPath, auth, alive) {
+        routes.forEach(route => {
+            let { path, children, meta = {} } = route;
+            let { requireAuth, keepAlive } = meta;
 
-        if (path.indexOf('/') != 0) {
-            path = parentPath.concat('/', path);
-        }
+            if (!requireAuth) {
+                requireAuth = auth;
+            }
 
-        _routes.push(
-            _assign({ name: path.substr(1).replace(/\//g, '_') }, route, {
-                path,
-                children: void 0,
-                meta: _assign({}, meta, { requireAuth, keepAlive }),
-            })
-        );
+            if (keepAlive === void 0) {
+                keepAlive = alive;
+            }
 
-        children && disintegrationRoutes(children, path, requireAuth, keepAlive);
-    });
-})(routes, '', false);
+            if (path.indexOf('/') != 0) {
+                path = parentPath.concat('/', path);
+            }
+
+            _routes.push(
+                _assign({ name: path.substr(1).replace(/\//g, '_') }, route, {
+                    path,
+                    children: void 0,
+                    meta: _assign({}, meta, { requireAuth, keepAlive }),
+                })
+            );
+
+            children && _disintegrationRoutes(children, path, requireAuth, keepAlive);
+        });
+    })(routes, parentPath, auth);
+
+    return _routes;
+}
 
 Vue.use(VueRouter);
 export default new VueRouter({
-    routes: _routes,
+    routes: disintegrationRoutes(routes),
 });
