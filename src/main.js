@@ -5,6 +5,14 @@ import store from './store';
 import * as types from './store/types';
 import './registerServiceWorker';
 
+// 过滤器
+import filter from './filter';
+Vue.use(filter);
+
+// 公共Vue实例，用于数据通信
+import Bus from '@/utils/bus.js';
+Vue.use(Bus);
+
 // 路由拦截（前置守卫）
 router.beforeEach((to, from, next) => {
     store.dispatch(types.LOGGED_INFO).then(isLogin => {
@@ -22,14 +30,6 @@ router.beforeEach((to, from, next) => {
         }
     });
 });
-
-// 过滤器
-import filter from './filter';
-Vue.use(filter);
-
-// 公共Vue实例，用于数据通信
-import Bus from '@/utils/bus.js';
-Vue.use(Bus);
 
 new Vue({
     store,

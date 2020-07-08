@@ -2,14 +2,12 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import routes from './routes';
 
-const _assign = Object.assign;
-
 function disintegrationRoutes(routes, parentPath = '', auth = false) {
     const _routes = [];
 
     (function _disintegrationRoutes(routes, parentPath, auth, alive) {
         routes.forEach(route => {
-            let { path, children, meta = {} } = route;
+            let { path, children, meta = {}, ...other } = route;
             let { requireAuth, keepAlive } = meta;
 
             if (!requireAuth) {
@@ -24,13 +22,12 @@ function disintegrationRoutes(routes, parentPath = '', auth = false) {
                 path = parentPath.concat('/', path);
             }
 
-            _routes.push(
-                _assign({ name: path.substr(1).replace(/\//g, '_') }, route, {
-                    path,
-                    children: void 0,
-                    meta: _assign({}, meta, { requireAuth, keepAlive }),
-                })
-            );
+            _routes.push({
+                name: path.substr(1),
+                ...other,
+                path,
+                meta: { ...meta, requireAuth, keepAlive },
+            });
 
             children && _disintegrationRoutes(children, path, requireAuth, keepAlive);
         });

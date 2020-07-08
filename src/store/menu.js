@@ -20,8 +20,9 @@ const menu = (function generateMenu(routes, firstly, parentPath, menuLevel) {
             menu.push({
                 path,
                 children,
-                meta: { title, icon },
-                name: name || path.substr(1).replace(/\//g, '_'),
+                title,
+                icon,
+                name: name || path.substr(1),
             });
         }
 

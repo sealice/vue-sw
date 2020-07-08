@@ -1,6 +1,7 @@
 // import Vue from 'vue';
 import axios from 'axios';
 import buildURL from 'axios/lib/helpers/buildURL';
+import { merge } from 'axios/lib/utils';
 
 function isPlainObject(val) {
     return val && val.constructor.name === 'Object';
@@ -99,12 +100,12 @@ const statusText = {
 
 const defaults = {
     // baseURL: '',
-    timeout: 15000, // 默认请求超时/ms
+    // timeout: 15000, // 默认请求超时/ms
     // emulateJSON: true, // 是否默认表单提交
 };
 
 export const serviceCreate = config => {
-    const service = axios.create(Object.assign(defaults, config));
+    const service = axios.create(merge(defaults, config));
     service.interceptors.request.use(...requestInterceptors);
     service.interceptors.response.use(...responseInterceptors);
 

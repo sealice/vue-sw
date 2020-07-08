@@ -1,18 +1,21 @@
-const install = Vue => {
-    const Bus = new Vue({
-        methods: {
-            emit(event, ...args) {
-                this.$emit(event, ...args);
-            },
-            on(event, cb) {
-                this.$on(event, cb);
-            },
-            off(event, cb) {
-                this.$off(event, cb);
-            },
+import Vue from 'vue';
+
+export const bus = new Vue({
+    methods: {
+        emit(event, ...args) {
+            this.$emit(event, ...args);
         },
-    });
-    Vue.prototype.$bus = Bus;
+        on(event, cb) {
+            this.$on(event, cb);
+        },
+        off(event, cb) {
+            this.$off(event, cb);
+        },
+    },
+});
+
+const install = Vue => {
+    Vue.prototype.$bus = bus;
 };
 
 export default install;
