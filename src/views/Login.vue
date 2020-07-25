@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import * as types from '../store/types';
+import { LOGIN } from '@/store/types';
 let vm;
 export default {
     beforeCreate() {
@@ -30,7 +30,7 @@ export default {
     methods: {
         submit() {
             vm.$store
-                .dispatch(types.LOGIN, {
+                .dispatch(LOGIN, {
                     username: vm.username,
                     password: vm.password,
                 })

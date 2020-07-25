@@ -1,8 +1,7 @@
 import stateText from './stateText';
 
-// 格式化日期，默认 yyyy-MM-dd hh:mm:ss
-export const date = function(date, format) {
-    format = format || 'yyyy-MM-dd hh:mm:ss';
+// 格式化日期
+export const dateFormat = function(date, format) {
     if (typeof date === 'string') {
         date = date - 0 || (!/\d+T\d+/.test(date) ? date.replace(/-/g, '/') : date);
     }
@@ -38,6 +37,9 @@ export const date = function(date, format) {
     });
 };
 
+export const date = date => dateFormat(date, 'yyyy-MM-dd');
+export const datetime = date => dateFormat(date, 'yyyy-MM-dd hh:mm:ss');
+
 // 格式化数字
 export const number = function(number, precision, thousand) {
     precision = precision || 0;
@@ -69,15 +71,15 @@ export const stateValue = stateKeys => {
     return value;
 };
 
-// 状态过滤器
+// 状态转文本过滤器
 export const stateToText = (state, stateKeys) => {
     const value = stateValue(stateKeys);
     let text = '';
 
     for (let i in value) {
         const val = value[i];
-        if (val.key == state) {
-            text = val.text;
+        if (val.value == state) {
+            text = val.label;
             break;
         }
     }

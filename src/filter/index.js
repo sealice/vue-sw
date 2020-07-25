@@ -7,8 +7,8 @@ export default function install(Vue) {
         $stateKey: (key, numeric) => (numeric ? Number(key) : String(key)),
         // 读取状态值对象
         $stateValue: filter.stateValue,
-        // 状态转html
-        $stateToHtml: (state, stateKeys, render) => render(filter.stateToText(state, stateKeys), state),
+        // 状态转文本
+        $stateToText: filter.stateToText,
     });
 
     // 注册过滤器

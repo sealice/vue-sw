@@ -19,6 +19,13 @@ export default {
             display: false,
         };
     },
+    created() {
+        this.$bus.$on('updated-version', registration => {
+            // 更新版本，可以在这里先做个更新提示
+            registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+            location.reload();
+        });
+    },
     mounted() {
         setTimeout(() => {
             this.display = true;

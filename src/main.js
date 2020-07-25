@@ -2,7 +2,7 @@ import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
 import store from './store';
-import * as types from './store/types';
+import { GET_USER_INFO } from './store/types';
 import './registerServiceWorker';
 
 // 过滤器
@@ -15,7 +15,7 @@ Vue.use(Bus);
 
 // 路由拦截（前置守卫）
 router.beforeEach((to, from, next) => {
-    store.dispatch(types.LOGGED_INFO).then(isLogin => {
+    store.dispatch(GET_USER_INFO).then(isLogin => {
         if (to.matched.some(record => record.meta.requireAuth)) {
             if (isLogin) {
                 next();

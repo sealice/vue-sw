@@ -1,2 +1,3 @@
-export const LOGIN = 'LOGIN';
-export const LOGGED_INFO = 'LOGGED_INFO';
+export const LOGIN = 'login';
+export const GET_USER_INFO = 'get/user/info';
+export const SET_USER_INFO = 'set/user/info';
