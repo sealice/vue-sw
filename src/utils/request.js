@@ -11,29 +11,41 @@ let acitveAxios = 0;
 let loadingInstance;
 let timer;
 
-const showLoading = loading => {
-    acitveAxios++;
-    if (timer) clearTimeout(timer);
-    if (loading) {
+const setLoading = () => {
+    if (acitveAxios > 0) {
         loadingInstance = true;
-        console.log('loading show');
+        console.log('loading show', Date.now());
+
+        // 优化loading的显示，保证用250ms的时间显示loading
+        // 避免请求响应在400-600ms之间时，loading闪现问题（loading还未来得及显示就关闭了）
+        if (acitveAxios == 1) {
+            acitveAxios++;
+            setTimeout(closeLoading, 250);
+        }
+    }
+};
+
+const showLoading = loading => {
+    if (loading !== undefined && !loading) {
         return;
     }
 
-    timer = setTimeout(() => {
-        if (acitveAxios > 0) {
-            loadingInstance = true;
-            console.log('loading show');
-        }
-    }, 400);
+    acitveAxios++;
+    timer = timer && clearTimeout(timer);
+    if (loading) {
+        setLoading();
+    } else {
+        // 400ms内请求还有没有响应则显示loading
+        timer = setTimeout(setLoading, 400);
+    }
 };
 
 const closeLoading = () => {
     acitveAxios--;
     if (acitveAxios <= 0) {
-        clearTimeout(timer);
+        timer = timer && clearTimeout(timer);
         if (loadingInstance) {
-            console.log('loading hide');
+            console.log('loading hide', Date.now());
             loadingInstance = null;
         }
     }
@@ -42,7 +54,7 @@ const closeLoading = () => {
 // 请求拦截
 const requestInterceptors = [
     cfg => {
-        showLoading(cfg.loading);
+        showLoading(cfg.loading); // 传入true立即显示loading
 
         // 表单提交
         if (cfg.emulateJSON && isPlainObject(cfg.data)) {

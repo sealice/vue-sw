@@ -38,29 +38,40 @@ module.exports = {
     ],
   },
 
-  chainWebpack: config => {
-    config.plugin('html').tap(args =>
-      args.map(arg =>
-        _.merge(arg, {
-          minify: {
-            removeAttributeQuotes: false,
-            removeScriptTypeAttributes: false,
-            // preserveLineBreaks: true,
-          },
-        })
-      )
-    );
-
-    config.optimization.minimizer('terser').tap(args =>
-      args.map(arg =>
-        _.merge(arg, {
-          terserOptions: {
-            compress: {
-              pure_funcs: ['console.log'], // 打包移除console.log
+  chainWebpack(config) {
+    config.when(process.env.NODE_ENV === 'production', config => {
+      config.plugin('html').tap(args =>
+        args.map(arg =>
+          _.merge(arg, {
+            minify: {
+              removeAttributeQuotes: false,
+              removeScriptTypeAttributes: false,
+              // preserveLineBreaks: true,
             },
+          })
+        )
+      );
+
+      config.optimization.minimizer('terser').tap(args =>
+        args.map(arg =>
+          _.merge(arg, {
+            terserOptions: {
+              compress: {
+                pure_funcs: ['console.log'], // 打包移除console.log
+              },
+            },
+          })
+        )
+      );
+
+      config.optimization.splitChunks(
+        _.merge(config.optimization.get('splitChunks'), {
+          cacheGroups: {
+            vendors: { name: 'vendor' },
+            common: { name: 'common' },
           },
         })
-      )
-    );
+      );
+    });
   },
 };

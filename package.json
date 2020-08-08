@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "modern": "vue-cli-service build --modern"
   },
   "dependencies": {
     "axios": "~0.18.1",
@@ -18,6 +19,8 @@
     "vuex": "^3.0.1"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-export-default-from": "^7.10.4",
+    "@babel/plugin-syntax-export-default-from": "^7.10.4",
     "@vue/cli-plugin-babel": "^4.0.0",
     "@vue/cli-plugin-eslint": "^4.0.0",
     "@vue/cli-plugin-router": "^4.0.0",
@@ -53,7 +56,8 @@
     "printWidth": 120,
     "semi": true,
     "singleQuote": true,
-    "trailingComma": "es5"
+    "trailingComma": "es5",
+    "arrowParens": "avoid"
   },
   "postcss": {
     "plugins": {
@@ -62,6 +66,7 @@
   },
   "browserslist": [
     "> 1%",
-    "last 2 versions"
+    "last 2 versions",
+    "not dead"
   ]
 }

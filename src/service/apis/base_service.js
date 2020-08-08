@@ -1,7 +1,7 @@
 import { merge } from 'axios/lib/utils';
 import { service } from '@/utils/request';
 
-// @config {headers, emulateJSON, loading, msg, errMsg, disableInterceptor}
+// @config {headers, emulateJSON, loading, errMsg, disableInterceptor}
 export const baseService = {
     // @data {username, password}
     login: (data, config) => {

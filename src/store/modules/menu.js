@@ -1,4 +1,4 @@
-import routes from '../router/routes';
+import routes from '@/router/routes';
 
 const menu = (function generateMenu(routes, firstly, parentPath, menuLevel) {
     let menu = [];
@@ -34,4 +34,6 @@ const menu = (function generateMenu(routes, firstly, parentPath, menuLevel) {
     return menu;
 })(routes, true, '');
 
-export default menu;
+export default {
+    state: menu,
+};

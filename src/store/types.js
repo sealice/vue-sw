@@ -1,3 +1,4 @@
 export const LOGIN = 'login';
-export const GET_USER_INFO = 'get/user/info';
-export const SET_USER_INFO = 'set/user/info';
+export const LOGOUT = 'logout';
+export const LOGGED_GET = 'logged/get';
+export const USER_SET_INFO = 'user/set/info';

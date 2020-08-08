@@ -1,15 +1,12 @@
-import * as filter from './filter';
 export * from './filter';
+import * as filter from './filter';
+import * as state from './state';
 
 export default function install(Vue) {
-    Object.assign(Vue.prototype, {
-        // 解析状态码
-        $stateKey: (key, numeric) => (numeric ? Number(key) : String(key)),
-        // 读取状态值对象
-        $stateValue: filter.stateValue,
-        // 状态转文本
-        $stateToText: filter.stateToText,
-    });
+    // 把处理状态值的方法stateKey、setState、getState、stateToText添加到Vue原型上
+    for (let [k, v] of Object.entries(state)) {
+        Vue.prototype['$' + k] = v;
+    }
 
     // 注册过滤器
     for (let key in filter) {

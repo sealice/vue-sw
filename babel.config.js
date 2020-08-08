@@ -4,9 +4,13 @@ module.exports = {
       '@vue/cli-plugin-babel/preset',
       {
         loose: true,
-        polyfills: ['es.object.assign', 'es.promise', 'es.promise.finally'],
+        polyfills: ['es.array.iterator', 'es.object.assign', 'es.promise', 'es.promise.finally'],
       },
     ],
   ],
-  plugins: ['lodash'],
+  plugins: [
+    '@babel/plugin-proposal-export-default-from',
+    '@babel/plugin-syntax-export-default-from',
+    'lodash',
+  ],
 };
