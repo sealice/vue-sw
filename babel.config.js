@@ -9,6 +9,13 @@ module.exports = {
     ],
   ],
   plugins: [
+    // [
+    //   'component',
+    //   {
+    //     libraryName: 'element-ui',
+    //     styleLibraryName: 'theme-chalk',
+    //   },
+    // ],
     '@babel/plugin-proposal-export-default-from',
     '@babel/plugin-syntax-export-default-from',
     'lodash',

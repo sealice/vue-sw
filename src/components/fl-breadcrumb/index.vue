@@ -1,13 +1,21 @@
 <template>
-    <div>
-        <span v-for="(item, i) in navs" :key="i">{{ item.title }} &gt;</span>
-    </div>
+    <el-breadcrumb separator="/">
+        <el-breadcrumb-item v-for="(item, i) in navs" :key="i" :to="i < navs.length - 1 ? item.path : ''">
+            {{ item.title }}
+        </el-breadcrumb-item>
+    </el-breadcrumb>
 </template>
 
 <script>
 import pathToRegexp from 'path-to-regexp';
+import { Breadcrumb, BreadcrumbItem } from 'element-ui';
 
 export default {
+    name: 'FlBreadcrumb',
+    components: {
+        ElBreadcrumb: Breadcrumb,
+        ElBreadcrumbItem: BreadcrumbItem,
+    },
     computed: {
         navs() {
             const navs = [];

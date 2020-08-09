@@ -19,7 +19,7 @@ export function transformState(str) {
         .trim()
         .split(/[\n,，]+/)
         .map(item => {
-            const [value, label] = item.trim().split(/[:：]/);
+            const [value, label] = item.trim().split(/\s*[:：]\s*/);
             return { value, label };
         });
 }

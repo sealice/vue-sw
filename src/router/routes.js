@@ -17,7 +17,7 @@ export default [
             {
                 path: 'bar',
                 meta: { title: 'Bar' },
-                components: require('../components/HelloWorld.vue'),
+                components: require('../views/HelloWorld.vue'),
             },
         ],
     },
@@ -25,7 +25,7 @@ export default [
         level: 2,
         path: '/hello',
         meta: { title: 'Hello', layout: false },
-        components: require('../components/HelloWorld.vue'),
+        components: require('../views/HelloWorld.vue'),
     },
     {
         path: '/login',

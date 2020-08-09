@@ -5,6 +5,11 @@ import store from './store';
 import { LOGGED_GET } from './store/types';
 import './registerServiceWorker';
 
+// ElementUI
+import 'element-ui/lib/theme-chalk/index.css';
+import ElementUI from 'element-ui';
+Vue.use(ElementUI);
+
 // 过滤器
 import filter from './filter';
 Vue.use(filter);
@@ -12,6 +17,10 @@ Vue.use(filter);
 // 公共Vue实例，用于数据通信
 import Bus from './utils/bus';
 Vue.use(Bus);
+
+// 公共组件
+import Components from './components';
+Vue.use(Components);
 
 // 路由拦截（前置守卫）
 router.beforeEach((to, from, next) => {

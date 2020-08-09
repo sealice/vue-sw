@@ -69,6 +69,12 @@ module.exports = {
           cacheGroups: {
             vendors: { name: 'vendor' },
             common: { name: 'common' },
+            elementUI: {
+              name: 'element-ui',
+              test: /[\\/]node_modules[\\/]element-ui/,
+              priority: -5,
+              chunks: 'initial',
+            },
           },
         })
       );
