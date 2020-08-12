@@ -1,6 +1,6 @@
 <template>
-    <el-checkbox-group v-model="innerValue" :disabled="disabled" :min="min" :max="max">
-        <el-checkbox v-for="item in $getState(stateKey)" :key="item.value" :label="$stateKey(item.value, numeric)">{{
+    <el-checkbox-group v-model="innerValue" v-on="$listeners" :disabled="disabled" :min="min" :max="max">
+        <el-checkbox v-for="item in items" :key="item.value" :label="$stateKey(item.value, numeric)">{{
             item.label
         }}</el-checkbox>
     </el-checkbox-group>
@@ -17,6 +17,8 @@ export default {
     },
     props: {
         value: Array,
+        data: Array,
+        exclude: [String, Number, Array],
         stateKey: String,
         numeric: Boolean,
         disabled: Boolean,
@@ -31,6 +33,12 @@ export default {
             set(value) {
                 this.$emit('input', value);
             },
+        },
+        items() {
+            const exclude = this.exclude ? [].concat(this.exclude) : false;
+            const items = this.data ? this.data : this.$getState(this.stateKey);
+
+            return !exclude ? items : items.filter(item => !exclude.some(val => val == item.value));
         },
     },
 };

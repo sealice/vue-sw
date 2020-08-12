@@ -39,6 +39,21 @@ module.exports = {
   },
 
   chainWebpack(config) {
+    config.optimization.splitChunks(
+      _.merge(config.optimization.get('splitChunks'), {
+        cacheGroups: {
+          vendors: { name: 'vendor' },
+          common: { name: 'common' },
+          elementUI: {
+            name: 'element-ui',
+            test: /[\\/]node_modules[\\/]element-ui/,
+            priority: -5,
+            chunks: 'initial',
+          },
+        },
+      })
+    );
+
     config.when(process.env.NODE_ENV === 'production', config => {
       config.plugin('html').tap(args =>
         args.map(arg =>
@@ -62,21 +77,6 @@ module.exports = {
             },
           })
         )
-      );
-
-      config.optimization.splitChunks(
-        _.merge(config.optimization.get('splitChunks'), {
-          cacheGroups: {
-            vendors: { name: 'vendor' },
-            common: { name: 'common' },
-            elementUI: {
-              name: 'element-ui',
-              test: /[\\/]node_modules[\\/]element-ui/,
-              priority: -5,
-              chunks: 'initial',
-            },
-          },
-        })
       );
     });
   },

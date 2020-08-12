@@ -1,5 +1,5 @@
 <template>
-    <el-date-picker v-bind="$props" v-model="innerValue"></el-date-picker>
+    <el-date-picker v-bind="$props" v-model="innerValue" v-on="$listeners"></el-date-picker>
 </template>
 
 <script>
