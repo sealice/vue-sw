@@ -1,5 +1,5 @@
 <template>
-    <el-date-picker v-bind="$props" v-model="innerValue" v-on="$listeners"></el-date-picker>
+    <el-date-picker v-bind="defOptions" v-model="innerValue" v-on="$listeners"></el-date-picker>
 </template>
 
 <script>
@@ -11,6 +11,8 @@ export default {
         ElDatePicker: DatePicker,
     },
     props: {
+        beforeDate: [String, Date],
+        afterDate: [String, Date],
         value: [String, Number, Array],
         format: String,
         align: String,
@@ -56,6 +58,27 @@ export default {
         },
     },
     computed: {
+        defOptions() {
+            let pickerOptions = {};
+            const { beforeDate, afterDate, ...props } = this.$props;
+            const toLocal = date => (typeof date === 'string' ? date.replace(/-/g, '/') : date);
+
+            if (beforeDate || afterDate) {
+                const now = new Date();
+                pickerOptions = {
+                    disabledDate(date) {
+                        return (
+                            (beforeDate && date < new Date(beforeDate == 'now' ? now - 864e5 : toLocal(beforeDate))) ||
+                            (afterDate && date > new Date(afterDate == 'now' ? now : toLocal(afterDate)))
+                        );
+                    },
+                };
+            }
+
+            props.pickerOptions = Object.assign(pickerOptions, props.pickerOptions);
+
+            return props;
+        },
         innerValue: {
             get() {
                 return this.value;

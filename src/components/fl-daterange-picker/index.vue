@@ -23,6 +23,9 @@ export default {
         },
         // 是否补全时间，开始时间补00:00:00，结束时间补23:59:59
         completionTime: Boolean,
+        beforeDate: [String, Date],
+        afterDate: [String, Date],
+        value: Array,
         format: String,
         align: String,
         readonly: Boolean,
@@ -68,26 +71,49 @@ export default {
     },
     computed: {
         defOptions() {
-            const props = Object.assign({}, this.$props);
-            delete props.startTime;
-            delete props.endTime;
-            delete props.completionTime;
+            let pickerOptions = {};
+            // eslint-disable-next-line no-unused-vars
+            const { startTime, endTime, completionTime, beforeDate, afterDate, ...props } = this.$props;
+            const toLocal = date => (typeof date === 'string' ? date.replace(/-/g, '/') : date);
+
+            if (beforeDate || afterDate) {
+                const now = new Date();
+                pickerOptions = {
+                    disabledDate(date) {
+                        return (
+                            (beforeDate && date < new Date(beforeDate == 'now' ? now - 864e5 : toLocal(beforeDate))) ||
+                            (afterDate && date > new Date(afterDate == 'now' ? now : toLocal(afterDate)))
+                        );
+                    },
+                };
+            }
+
+            props.pickerOptions = Object.assign(pickerOptions, props.pickerOptions);
+
             return props;
         },
         innerValue: {
             get() {
+                if (this.value) {
+                    return this.value;
+                }
+
                 return [this.startTime, this.endTime];
             },
             set(value) {
                 let [startTime, endTime] = value || ['', ''];
 
-                if (startTime && endTime && this.completionTime && this.type == 'daterange') {
+                if (this.completionTime && this.type == 'daterange' && startTime && endTime) {
                     startTime += ' 00:00:00';
                     endTime += ' 23:59:59';
                 }
 
-                this.$emit('update:start-time', startTime);
-                this.$emit('update:end-time', endTime);
+                if (this.value) {
+                    this.$emit('input', [startTime, endTime]);
+                } else {
+                    this.$emit('update:start-time', startTime);
+                    this.$emit('update:end-time', endTime);
+                }
             },
         },
     },
