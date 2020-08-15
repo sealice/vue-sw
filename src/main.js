@@ -47,4 +47,18 @@ new Vue({
     store,
     router,
     render: h => h(App),
+    created() {
+        let loadingInstance;
+
+        this.$bus
+            .$on('loading:show', () => {
+                loadingInstance = this.$loading({
+                    lock: true,
+                    fullscreen: true,
+                });
+            })
+            .$on('loading:hide', () => {
+                loadingInstance && loadingInstance.close();
+            });
+    },
 }).$mount('#app');

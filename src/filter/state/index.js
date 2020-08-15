@@ -1,3 +1,5 @@
+/* eslint no-unused-vars: "off" */
+
 export { setState, getState, stateKey, stateToText } from './state';
 import State, { transformState, fetchState } from './state';
 

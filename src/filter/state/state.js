@@ -1,9 +1,17 @@
 import Vue from 'vue';
 
-let stateData = {};
+let stateData = null;
+const _isArray = Array.isArray;
+
+function isPlainObject(val) {
+    return val && val.constructor.name === 'Object';
+}
 
 export default function State(obj) {
-    stateData = Vue.observable(obj);
+    if (!stateData && isPlainObject(obj)) {
+        stateData = Vue.observable(obj);
+    }
+
     return stateData;
 }
 
@@ -29,6 +37,7 @@ export function transformState(str) {
  * @param {object} mapper 映射字段为value、label，默认映射id、name字段
  * @param {boolean} isCache 是否缓存接口数据，默认缓存
  * @param {string} key 接口返回状态值列表的字段，默认list
+ *
  * 当mapper或isCache是string类型是会作为key值
  */
 export function fetchState(api, mapper, isCache, key = 'list') {
@@ -70,6 +79,10 @@ export function fetchState(api, mapper, isCache, key = 'list') {
             value: function fetch() {
                 return api().then(res => {
                     // 处理响应数据
+                    if (!_isArray(res[key])) {
+                        throw new Error(`响应数据中"${key}"应该是一个数组，而不是${typeof res[key]}`);
+                    }
+
                     return res[key].map(item => ({
                         value: item[mapper.value],
                         label: item[mapper.label],
@@ -100,7 +113,7 @@ export const setState = (key, value) => {
         // 已是最后的key，开始赋值
         if (i == last) {
             if (data[k]) {
-                if (!Array.isArray(data[k])) {
+                if (!_isArray(data[k])) {
                     throw error;
                 }
                 // 原来是数组的先清空再添加元素，避免破坏原数组
@@ -116,7 +129,7 @@ export const setState = (key, value) => {
             continue;
         }
 
-        if (Array.isArray(data[k])) {
+        if (_isArray(data[k])) {
             throw error;
         }
 
@@ -152,7 +165,10 @@ export const getState = key => {
                         setTimeout(() => data.setFlag(false), 500);
                     }
                 },
-                () => data.setFlag(false)
+                err => {
+                    console.warn(`从接口获取数据设置"stateData"的"${key}"值错误。`, err);
+                    data.setFlag(false);
+                }
             );
         }
     }

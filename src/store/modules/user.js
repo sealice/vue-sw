@@ -1,5 +1,5 @@
 import { LOGIN, LOGOUT, LOGGED_GET, USER_SET_INFO } from '../types';
-import { baseService } from '@/service';
+import { login, getUser } from '@/service';
 
 let loggedInfoRequested = false;
 const _assign = Object.assign;
@@ -22,7 +22,7 @@ export default {
     },
     actions: {
         [LOGIN]({ getters, commit }, data) {
-            return baseService.login(data).then(res => {
+            return login(data).then(res => {
                 commit(USER_SET_INFO, res.data);
                 return getters.isLogin;
             });
@@ -40,8 +40,8 @@ export default {
                 }
 
                 loggedInfoRequested = true;
-                baseService
-                    .getUser()
+
+                getUser()
                     .then(res => {
                         commit(USER_SET_INFO, res.data);
                     })

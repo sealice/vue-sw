@@ -1,26 +1,26 @@
-// import Vue from 'vue';
 import axios from 'axios';
 import buildURL from 'axios/lib/helpers/buildURL';
 import { merge } from 'axios/lib/utils';
+import { bus } from './bus';
 
 function isPlainObject(val) {
     return val && val.constructor.name === 'Object';
 }
 
 let acitveAxios = 0;
-let loadingInstance;
+let loadingFlag;
 let timer;
 
 const setLoading = () => {
     if (acitveAxios > 0) {
-        loadingInstance = true;
-        console.log('loading show', Date.now());
+        loadingFlag = true;
+        bus.$emit('loading:show');
 
         // 优化loading的显示，保证用250ms的时间显示loading
         // 避免请求响应在400-600ms之间时，loading闪现问题（loading还未来得及显示就关闭了）
         if (acitveAxios == 1) {
             acitveAxios++;
-            setTimeout(closeLoading, 250);
+            setTimeout(closeLoading, 350);
         }
     }
 };
@@ -44,9 +44,9 @@ const closeLoading = () => {
     acitveAxios--;
     if (acitveAxios <= 0) {
         timer = timer && clearTimeout(timer);
-        if (loadingInstance) {
-            console.log('loading hide', Date.now());
-            loadingInstance = null;
+        if (loadingFlag) {
+            loadingFlag = false;
+            bus.$emit('loading:hide');
         }
     }
 };
@@ -124,4 +124,4 @@ export const serviceCreate = config => {
     return service;
 };
 
-export const service = serviceCreate();
+export default serviceCreate();
