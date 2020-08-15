@@ -15,8 +15,8 @@ import filter from './filter';
 Vue.use(filter);
 
 // 公共Vue实例，用于数据通信
-import Bus from './utils/bus';
-Vue.use(Bus);
+import bus from './utils/bus';
+Vue.use(bus);
 
 // 公共组件
 import Components from './components';
@@ -50,15 +50,14 @@ new Vue({
     created() {
         let loadingInstance;
 
-        this.$bus
-            .$on('loading:show', () => {
-                loadingInstance = this.$loading({
-                    lock: true,
-                    fullscreen: true,
-                });
-            })
-            .$on('loading:hide', () => {
-                loadingInstance && loadingInstance.close();
+        bus.on('loading:show', ({ text } = {}) => {
+            loadingInstance = this.$loading({
+                text,
+                lock: true,
+                fullscreen: true,
             });
+        }).on('loading:hide', () => {
+            loadingInstance && loadingInstance.close();
+        });
     },
 }).$mount('#app');
