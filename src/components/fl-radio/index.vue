@@ -39,5 +39,14 @@ export default {
             return !exclude ? items : items.filter(item => !exclude.some(val => val == item.value));
         },
     },
+    methods: {
+        resetValue() {
+            this.innerValue = '';
+        },
+    },
+    watch: {
+        data: 'resetValue',
+        stateKey: 'resetValue',
+    },
 };
 </script>

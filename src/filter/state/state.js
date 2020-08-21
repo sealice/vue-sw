@@ -141,7 +141,9 @@ export const setState = (key, value) => {
 export const getState = key => {
     let data = stateData;
 
-    if (key) {
+    if (!key && key !== undefined) {
+        return [];
+    } else if (key) {
         const keys = key.split('.');
 
         for (let k of keys) {

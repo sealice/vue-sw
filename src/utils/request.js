@@ -82,7 +82,8 @@ const responseInterceptors = [
             cfg.errMsg && console.error(data.msg || cfg.errMsg);
             return Promise.reject(res);
         }
-        return data;
+
+        return res;
     },
     err => {
         closeLoading();

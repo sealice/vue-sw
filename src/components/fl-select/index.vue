@@ -62,5 +62,14 @@ export default {
             return !exclude ? items : items.filter(item => !exclude.some(val => val == item.value));
         },
     },
+    methods: {
+        resetValue() {
+            this.innerValue = this.multiple ? [] : '';
+        },
+    },
+    watch: {
+        data: 'resetValue',
+        stateKey: 'resetValue',
+    },
 };
 </script>
