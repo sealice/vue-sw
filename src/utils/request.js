@@ -1,6 +1,7 @@
 import axios from 'axios';
 import buildURL from 'axios/lib/helpers/buildURL';
-import { merge } from 'axios/lib/utils';
+import { merge, isString } from 'axios/lib/utils';
+import { Message } from 'element-ui';
 import bus from './bus';
 
 function isPlainObject(val) {
@@ -11,10 +12,10 @@ let acitveAxios = 0;
 let loadingFlag;
 let timer;
 
-const setLoading = () => {
-    if (acitveAxios > 0) {
+const setLoading = loadingText => {
+    if (!loadingFlag && acitveAxios > 0) {
         loadingFlag = true;
-        bus.emit('loading:show');
+        bus.emit('loading:show', { text: isString(loadingText) ? loadingText : '' });
 
         // 优化loading的显示，保证用250ms的时间显示loading
         // 避免请求响应在400-600ms之间时，loading闪现问题（loading还未来得及显示就关闭了）
@@ -33,7 +34,7 @@ const showLoading = loading => {
     acitveAxios++;
     timer = timer && clearTimeout(timer);
     if (loading) {
-        setLoading();
+        setLoading(loading);
     } else {
         // 400ms内请求还有没有响应则显示loading
         timer = setTimeout(setLoading, 400);
@@ -54,7 +55,7 @@ const closeLoading = () => {
 // 请求拦截
 const requestInterceptors = [
     cfg => {
-        showLoading(cfg.loading); // 传入true立即显示loading
+        showLoading(cfg.loading); // 传入真值立即显示loading，如果为字符串还会显示加载文本
 
         // 表单提交
         if (cfg.emulateJSON && isPlainObject(cfg.data)) {
@@ -79,7 +80,7 @@ const responseInterceptors = [
                 return data;
             }
 
-            cfg.errMsg && console.error(data.msg || cfg.errMsg);
+            cfg.errMsg && Message.error(data.msg || cfg.errMsg);
             return Promise.reject(res);
         }
 
@@ -90,7 +91,15 @@ const responseInterceptors = [
 
         const { request: req } = err;
         err.ok = false;
-        console.error(statusText[req.status] || req.statusText || err.message);
+
+        switch (req.status) {
+            // case 401:
+            //     // do something
+            //     break;
+            default:
+                Message.error(statusText[req.status] || req.statusText || err.message);
+        }
+
         return Promise.reject(err);
     },
 ];

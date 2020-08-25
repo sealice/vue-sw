@@ -2,7 +2,7 @@ import Vue from 'vue';
 
 const bus = new Vue();
 
-export default {
+export default Object.freeze({
     install(Vue) {
         Vue.prototype.$bus = this;
     },
@@ -22,4 +22,4 @@ export default {
         bus.$emit(event, ...args);
         return this;
     },
-};
+});

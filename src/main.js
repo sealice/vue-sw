@@ -57,7 +57,9 @@ new Vue({
                 fullscreen: true,
             });
         }).on('loading:hide', () => {
-            loadingInstance && loadingInstance.close();
+            if (loadingInstance) {
+                loadingInstance = loadingInstance.close();
+            }
         });
     },
 }).$mount('#app');
