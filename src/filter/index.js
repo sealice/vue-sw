@@ -1,10 +1,10 @@
 export * from './filter';
 import * as filter from './filter';
-import * as state from './state';
+import * as dict from './dict';
 
 export default function install(Vue) {
-    // 把处理状态值的方法stateKey、setState、getState、stateToText添加到Vue原型上
-    for (let [k, v] of Object.entries(state)) {
+    // 把处理字典数据的方法dictKey、setDict、getDict、toDictLabel添加到Vue原型上
+    for (let [k, v] of Object.entries(dict)) {
         Vue.prototype['$' + k] = v;
     }
 

@@ -1,27 +1,30 @@
 import Vue from 'vue';
 
-let stateData = null;
+let dictData = null;
 const _isArray = Array.isArray;
 
 function isPlainObject(val) {
     return val && val.constructor.name === 'Object';
 }
 
-export default function State(obj) {
-    if (!stateData && isPlainObject(obj)) {
-        stateData = Vue.observable(obj);
+/**
+ * 初始化字典数据
+ * @param {object} obj 字典数据
+ */
+export default function Dict(obj) {
+    if (!dictData && isPlainObject(obj)) {
+        dictData = Vue.observable(obj);
     }
 
-    return stateData;
+    return dictData;
 }
 
 /**
- * 转换解析状态值列表
+ * 转换解析字典数据列表
  * @param {string} str 状态值对应字符串
- * @return [{ value: 'xx', label: 'xxx' }]
- * 例：transformState('0：否，1：是') // [{ value: '0', label: '否' }, { value: '1', label: '是' }]
+ * 例：transformDict('0：否，1：是') // [{ value: '0', label: '否' }, { value: '1', label: '是' }]
  */
-export function transformState(str) {
+export function transformDict(str) {
     return str
         .trim()
         .split(/[\n,，]+/)
@@ -32,15 +35,13 @@ export function transformState(str) {
 }
 
 /**
- * 从接口获取状态值列表
+ * 从接口获取字典数据列表，当mapper或isCache是string类型是会作为key值
  * @param {function} api 获取接口数据方法，需返回Promise
  * @param {object} mapper 映射字段为value、label，默认映射id、name字段
  * @param {boolean} isCache 是否缓存接口数据，默认缓存
  * @param {string} key 接口返回状态值列表的字段，默认list
- *
- * 当mapper或isCache是string类型是会作为key值
  */
-export function fetchState(api, mapper, isCache, key = 'list') {
+export function fetchDict(api, mapper, isCache, key = 'list') {
     const data = [];
     let flag = false; // 请求更新标记
     const mapperType = typeof mapper;
@@ -96,19 +97,27 @@ export function fetchState(api, mapper, isCache, key = 'list') {
     return data;
 }
 
-// 解析状态码（转为字符串/数字）
-export const stateKey = (key, numeric) => {
+/**
+ * 解析字典键值（转为字符串/数字）
+ * @param {string} key 字典键值
+ * @param {boolean} numeric 是否返回数字
+ */
+export function dictKey(key, numeric) {
     return numeric ? Number(key) : String(key);
-};
+}
 
-// 设置状态值对象，支持多层级
-export const setState = (key, value) => {
-    let data = stateData;
+/**
+ * 设置字典数据，支持多层级
+ * @param {string} key 字典类型字段
+ * @param {object} dict 字典数据
+ */
+export function setDict(key, dict) {
+    let data = dictData;
     const keys = key.split('.');
     const last = keys.length - 1;
 
     for (let [i, k] of Object.entries(keys)) {
-        const error = new Error(`您正在进行破坏性的设置"stateData"的"${key}->${k}"值`);
+        const error = new Error(`您正在进行破坏性的设置"dictData"的"${key}->${k}"值`);
 
         // 已是最后的key，开始赋值
         if (i == last) {
@@ -117,9 +126,9 @@ export const setState = (key, value) => {
                     throw error;
                 }
                 // 原来是数组的先清空再添加元素，避免破坏原数组
-                data[k].splice(0, data[k].length, ...value);
+                data[k].splice(0, data[k].length, ...dict);
             } else {
-                data[k] = value;
+                data[k] = dict;
             }
             break;
         }
@@ -135,11 +144,14 @@ export const setState = (key, value) => {
 
         data = data[k];
     }
-};
+}
 
-// 读取状态值对象，支持多层级
-export const getState = key => {
-    let data = stateData;
+/**
+ * 获取字典数据，支持多层级
+ * @param {string} key 字典类型字段
+ */
+export function getDict(key) {
+    let data = dictData;
 
     if (!key && key !== undefined) {
         return [];
@@ -162,13 +174,13 @@ export const getState = key => {
             data.setFlag(true);
             data.fetch().then(
                 value => {
-                    setState(key, value);
+                    setDict(key, value);
                     if (!data.isCache) {
                         setTimeout(() => data.setFlag(false), 500);
                     }
                 },
                 err => {
-                    console.warn(`从接口获取数据设置"stateData"的"${key}"值错误。`, err);
+                    console.warn(`从接口获取数据设置"dictData"的"${key}"值错误。`, err);
                     data.setFlag(false);
                 }
             );
@@ -176,19 +188,36 @@ export const getState = key => {
     }
 
     return data;
-};
+}
 
-// 状态转为文本
-export const stateToText = (stateVal, stateKey) => {
-    const data = getState(stateKey);
+/**
+ * 字典键值转为标签文本
+ * @param {string | number} value 字典键值
+ * @param {string | object} dict 字典类型字段/数据
+ */
+export function toDictLabel(value, dict) {
+    let data;
     let text = '';
 
+    switch (true) {
+        case typeof dict === 'string' && dict !== '':
+            data = getDict(dict);
+            break;
+
+        case _isArray(dict) && dict.length > 0:
+            data = dict;
+            break;
+
+        default:
+            return text;
+    }
+
     for (let val of data) {
-        if (val.value == stateVal) {
+        if (val.value == value) {
             text = val.label;
             break;
         }
     }
 
     return text;
-};
+}

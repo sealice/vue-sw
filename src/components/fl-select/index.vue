@@ -13,7 +13,7 @@
         <el-option
             v-for="item in items"
             :key="item.value"
-            :value="isObject ? item : $stateKey(item.value, numeric)"
+            :value="isObject ? item : $dictKey(item.value, numeric)"
             :label="item.label"
         ></el-option>
     </el-select>
@@ -57,7 +57,7 @@ export default {
         },
         items() {
             const exclude = this.exclude ? [].concat(this.exclude) : false;
-            const items = this.data ? this.data : this.$getState(this.stateKey);
+            const items = this.data ? this.data : this.$getDict(this.stateKey);
 
             return !exclude ? items : items.filter(item => !exclude.some(val => val == item.value));
         },
