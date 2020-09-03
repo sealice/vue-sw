@@ -32,7 +32,7 @@ export default {
         value: [String, Number, Array, Object],
         data: Array,
         exclude: [String, Number, Array],
-        stateKey: String,
+        dictKey: String,
         numeric: Boolean,
         isObject: Boolean,
         filterable: Boolean,
@@ -57,7 +57,7 @@ export default {
         },
         items() {
             const exclude = this.exclude ? [].concat(this.exclude) : false;
-            const items = this.data ? this.data : this.$getDict(this.stateKey);
+            const items = this.data ? this.data : this.$getDict(this.dictKey);
 
             return !exclude ? items : items.filter(item => !exclude.some(val => val == item.value));
         },
@@ -69,7 +69,14 @@ export default {
     },
     watch: {
         data: 'resetValue',
-        stateKey: 'resetValue',
+        dictKey: 'resetValue',
+        exclude() {
+            this.$nextTick(() => {
+                if (this.innerValue && !this.items.some(item => item.value == this.innerValue)) {
+                    this.resetValue();
+                }
+            });
+        },
     },
 };
 </script>

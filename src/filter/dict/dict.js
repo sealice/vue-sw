@@ -20,9 +20,9 @@ export default function Dict(obj) {
 }
 
 /**
- * 转换解析字典数据列表
- * @param {string} str 状态值对应字符串
+ * 转换解析字典数据列表.
  * 例：transformDict('0：否，1：是') // [{ value: '0', label: '否' }, { value: '1', label: '是' }]
+ * @param {string} str 状态值对应字符串
  */
 export function transformDict(str) {
     return str
