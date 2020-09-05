@@ -13,6 +13,7 @@ export default {
     props: {
         beforeDate: [String, Date],
         afterDate: [String, Date],
+        width: String,
         value: [String, Number, Array],
         format: String,
         align: String,
@@ -60,8 +61,12 @@ export default {
     computed: {
         defOptions() {
             let pickerOptions = {};
-            const { beforeDate, afterDate, ...props } = this.$props;
+            const { beforeDate, afterDate, width, ...props } = this.$props;
             const toLocal = date => (typeof date === 'string' ? date.replace(/-/g, '/') : date);
+
+            if (width) {
+                props.style = { width: !Number(width) ? width : width + 'px' };
+            }
 
             if (beforeDate || afterDate) {
                 const now = new Date();

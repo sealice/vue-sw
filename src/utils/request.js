@@ -1,6 +1,6 @@
 import axios from 'axios';
 import buildURL from 'axios/lib/helpers/buildURL';
-import { merge, isString } from 'axios/lib/utils';
+import { merge, deepMerge, isString } from 'axios/lib/utils';
 import { Message } from 'element-ui';
 import bus from './bus';
 
@@ -45,10 +45,8 @@ const closeLoading = () => {
     acitveAxios--;
     if (acitveAxios <= 0) {
         timer = timer && clearTimeout(timer);
-        if (loadingFlag) {
-            loadingFlag = false;
-            bus.emit('loading:hide');
-        }
+        loadingFlag = false;
+        bus.emit('loading:hide');
     }
 };
 
@@ -126,7 +124,7 @@ const defaults = {
     // emulateJSON: true, // 是否默认表单提交
 };
 
-export const serviceCreate = config => {
+const serviceCreate = config => {
     const service = axios.create(merge(defaults, config));
     service.interceptors.request.use(...requestInterceptors);
     service.interceptors.response.use(...responseInterceptors);
@@ -134,4 +132,8 @@ export const serviceCreate = config => {
     return service;
 };
 
-export default serviceCreate();
+const service = serviceCreate();
+
+export { serviceCreate, service, merge, deepMerge };
+
+export default service;

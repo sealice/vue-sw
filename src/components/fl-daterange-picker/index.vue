@@ -25,6 +25,7 @@ export default {
         completionTime: Boolean,
         beforeDate: [String, Date],
         afterDate: [String, Date],
+        width: String,
         value: Array,
         format: String,
         align: String,
@@ -73,8 +74,12 @@ export default {
         defOptions() {
             let pickerOptions = {};
             // eslint-disable-next-line no-unused-vars
-            const { startTime, endTime, completionTime, beforeDate, afterDate, ...props } = this.$props;
+            const { startTime, endTime, completionTime, beforeDate, afterDate, width, ...props } = this.$props;
             const toLocal = date => (typeof date === 'string' ? date.replace(/-/g, '/') : date);
+
+            if (width) {
+                props.style = { width: !Number(width) ? width : width + 'px' };
+            }
 
             if (beforeDate || afterDate) {
                 const now = new Date();

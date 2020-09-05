@@ -1,23 +1,26 @@
 <template>
-    <div id="app" v-show="display">
+    <div id="app">
         <!-- layout -->
         <template v-if="$route.meta.layout || $route.meta.layout === void 0">
-            <div id="nav">
+            <div id="nav" v-if="isLogin">
                 <router-link to="/">Home</router-link> | <router-link to="/about">About</router-link> |
                 <router-link to="/about/bar">About Bar</router-link>
             </div>
         </template>
 
-        <router-view />
+        <div class="main">
+            <router-view />
+        </div>
     </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
+    computed: mapGetters(['isLogin']),
     data() {
-        return {
-            display: false,
-        };
+        return {};
     },
     created() {
         this.$bus.on('updated-version', registration => {
@@ -25,11 +28,6 @@ export default {
             registration.waiting.postMessage({ type: 'SKIP_WAITING' });
             location.reload();
         });
-    },
-    mounted() {
-        setTimeout(() => {
-            this.display = true;
-        }, 30);
     },
 };
 </script>

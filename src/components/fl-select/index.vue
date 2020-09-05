@@ -2,6 +2,7 @@
     <el-select
         v-model="innerValue"
         v-on="$listeners"
+        :style="style"
         :clearable="clearable"
         :disabled="disabled"
         :filterable="filterable"
@@ -31,6 +32,7 @@ export default {
     props: {
         value: [String, Number, Array, Object],
         data: Array,
+        width: String,
         exclude: [String, Number, Array],
         dictKey: String,
         numeric: Boolean,
@@ -60,6 +62,14 @@ export default {
             const items = this.data ? this.data : this.$getDict(this.dictKey);
 
             return !exclude ? items : items.filter(item => !exclude.some(val => val == item.value));
+        },
+        style() {
+            const width = this.width;
+            if (width) {
+                return { width: !Number(width) ? width : width + 'px' };
+            }
+
+            return {};
         },
     },
     methods: {

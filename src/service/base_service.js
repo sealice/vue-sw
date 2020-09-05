@@ -1,5 +1,4 @@
-import { merge } from 'axios/lib/utils';
-import http from '@/utils/request';
+import http, { merge } from '@/utils/request';
 
 // @config {headers, emulateJSON, loading, errMsg, disableInterceptor}
 

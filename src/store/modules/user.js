@@ -22,9 +22,15 @@ export default {
     },
     actions: {
         [LOGIN]({ getters, commit }, data) {
-            return login(data).then(res => {
-                commit(USER_SET_INFO, res.data);
-                return getters.isLogin;
+            return new Promise(resolve => {
+                login(data)
+                    .then(res => {
+                        commit(USER_SET_INFO, res.data);
+                    })
+                    .catch(() => {})
+                    .finally(() => {
+                        resolve(getters.isLogin);
+                    });
             });
         },
         [LOGOUT]({ getters, commit }) {
@@ -41,10 +47,11 @@ export default {
 
                 loggedInfoRequested = true;
 
-                getUser()
+                getUser({ errMsg: false })
                     .then(res => {
                         commit(USER_SET_INFO, res.data);
                     })
+                    .catch(() => {})
                     .finally(() => {
                         resolve(getters.isLogin);
                     });

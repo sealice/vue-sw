@@ -55,6 +55,7 @@ new Vue({
                 text,
                 lock: true,
                 fullscreen: true,
+                customClass: 'full-loading',
             });
         }).on('loading:hide', () => {
             if (loadingInstance) {
