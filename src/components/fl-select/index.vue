@@ -8,6 +8,7 @@
         :filterable="filterable"
         :placeholder="placeholder"
         :multiple="multiple"
+        :size="size"
         :value-key="valueKey"
         :collapse-tags="collapseTags"
     >
@@ -41,6 +42,7 @@ export default {
         disabled: Boolean,
         multiple: Boolean,
         collapseTags: Boolean,
+        size: String,
         valueKey: String,
         placeholder: String,
         clearable: {

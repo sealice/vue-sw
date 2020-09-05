@@ -1,6 +1,6 @@
 <template>
-    <el-radio-group v-model="innerValue" v-on="$listeners" :disabled="disabled">
-        <el-radio v-for="item in items" :key="item.value" :label="$dictKey(item.value, numeric)">{{
+    <el-radio-group v-model="innerValue" v-on="$listeners" :disabled="disabled" :size="size">
+        <el-radio v-for="item in items" :key="item.value" :border="border" :label="$dictKey(item.value, numeric)">{{
             item.label
         }}</el-radio>
     </el-radio-group>
@@ -22,6 +22,8 @@ export default {
         dictKey: String,
         numeric: Boolean,
         disabled: Boolean,
+        border: Boolean,
+        size: String,
     },
     computed: {
         innerValue: {

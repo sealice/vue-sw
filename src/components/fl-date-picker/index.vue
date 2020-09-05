@@ -17,6 +17,7 @@ export default {
         value: [String, Number, Array],
         format: String,
         align: String,
+        size: String,
         readonly: Boolean,
         disabled: Boolean,
         pickerOptions: Object,

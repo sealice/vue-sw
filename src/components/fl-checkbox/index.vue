@@ -1,6 +1,6 @@
 <template>
-    <el-checkbox-group v-model="innerValue" v-on="$listeners" :disabled="disabled" :min="min" :max="max">
-        <el-checkbox v-for="item in items" :key="item.value" :label="$dictKey(item.value, numeric)">{{
+    <el-checkbox-group v-model="innerValue" v-on="$listeners" :disabled="disabled" :size="size" :min="min" :max="max">
+        <el-checkbox v-for="item in items" :key="item.value" :border="border" :label="$dictKey(item.value, numeric)">{{
             item.label
         }}</el-checkbox>
     </el-checkbox-group>
@@ -22,6 +22,8 @@ export default {
         dictKey: String,
         numeric: Boolean,
         disabled: Boolean,
+        border: Boolean,
+        size: String,
         min: Number,
         max: Number,
     },
