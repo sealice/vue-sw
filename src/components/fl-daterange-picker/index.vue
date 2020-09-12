@@ -3,13 +3,12 @@
 </template>
 
 <script>
-import { DatePicker } from 'element-ui';
+// import { DatePicker } from 'element-ui';
 
 export default {
-    name: 'FlDaterangePicker',
-    components: {
-        ElDatePicker: DatePicker,
-    },
+    // components: {
+    //     ElDatePicker: DatePicker,
+    // },
     props: {
         // 开始时间，需使用sync修饰符
         startTime: {

@@ -3,13 +3,12 @@
 </template>
 
 <script>
-import { DatePicker } from 'element-ui';
+// import { DatePicker } from 'element-ui';
 
 export default {
-    name: 'FlDatePicker',
-    components: {
-        ElDatePicker: DatePicker,
-    },
+    // components: {
+    //     ElDatePicker: DatePicker,
+    // },
     props: {
         beforeDate: [String, Date],
         afterDate: [String, Date],

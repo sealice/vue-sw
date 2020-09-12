@@ -8,14 +8,13 @@
 
 <script>
 import pathToRegexp from 'path-to-regexp';
-import { Breadcrumb, BreadcrumbItem } from 'element-ui';
+// import { Breadcrumb, BreadcrumbItem } from 'element-ui';
 
 export default {
-    name: 'FlBreadcrumb',
-    components: {
-        ElBreadcrumb: Breadcrumb,
-        ElBreadcrumbItem: BreadcrumbItem,
-    },
+    // components: {
+    //     ElBreadcrumb: Breadcrumb,
+    //     ElBreadcrumbItem: BreadcrumbItem,
+    // },
     computed: {
         navs() {
             const navs = [];

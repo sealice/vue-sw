@@ -7,14 +7,13 @@
 </template>
 
 <script>
-import { RadioGroup, Radio } from 'element-ui';
+// import { RadioGroup, Radio } from 'element-ui';
 
 export default {
-    name: 'FlRadio',
-    components: {
-        ElRadioGroup: RadioGroup,
-        ElRadio: Radio,
-    },
+    // components: {
+    //     ElRadioGroup: RadioGroup,
+    //     ElRadio: Radio,
+    // },
     props: {
         value: [String, Number],
         data: Array,

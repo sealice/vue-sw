@@ -25,14 +25,13 @@
 </template>
 
 <script>
-import { Select, Option } from 'element-ui';
+// import { Select, Option } from 'element-ui';
 
 export default {
-    name: 'FlSelect',
-    components: {
-        ElSelect: Select,
-        ElOption: Option,
-    },
+    // components: {
+    //     ElSelect: Select,
+    //     ElOption: Option,
+    // },
     props: {
         value: [String, Number, Array, Object],
         data: Array,

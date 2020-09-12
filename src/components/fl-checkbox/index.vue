@@ -7,14 +7,13 @@
 </template>
 
 <script>
-import { CheckboxGroup, Checkbox } from 'element-ui';
+// import { CheckboxGroup, Checkbox } from 'element-ui';
 
 export default {
-    name: 'FlCheckbox',
-    components: {
-        ElCheckboxGroup: CheckboxGroup,
-        ElCheckbox: Checkbox,
-    },
+    // components: {
+    //     ElCheckboxGroup: CheckboxGroup,
+    //     ElCheckbox: Checkbox,
+    // },
     props: {
         value: Array,
         data: Array,
