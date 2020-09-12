@@ -44,6 +44,8 @@ export default {
     props: {
         getDataMethod: Function,
         delDataMethod: Function,
+        defQueryForm: Object,
+        options: Object,
         showPagination: {
             type: Boolean,
             default: true,
@@ -51,14 +53,6 @@ export default {
         autoload: {
             type: Boolean,
             default: true,
-        },
-        options: {
-            type: Object,
-            default: () => ({}),
-        },
-        defQueryForm: {
-            type: Object,
-            default: () => ({}),
         },
     },
     computed: {
