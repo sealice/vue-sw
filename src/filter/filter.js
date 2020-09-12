@@ -24,15 +24,15 @@ export const dateFormat = function(date, format) {
 
     return format.replace(/([yMdhmsqS])\1*/g, function(m, t) {
         var v = String(map[t]);
+
         if (t === 'y') {
             return v.substr(4 - m.length);
-        }
-        if (t === 'S') {
+        } else if (t === 'S') {
             return ('00' + v).substr(v.length - 1);
-        }
-        if (m.length > 1) {
+        } else if (m.length > 1) {
             return ('0' + v).substr(v.length - 1);
         }
+
         return v;
     });
 };

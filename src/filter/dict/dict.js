@@ -22,7 +22,7 @@ export default function Dict(obj) {
 /**
  * 转换解析字典数据列表.
  * 例：transformDict('0：否，1：是') // [{ value: '0', label: '否' }, { value: '1', label: '是' }]
- * @param {string} str 状态值对应字符串
+ * @param {string} str 字典数据对应字符串
  */
 export function transformDict(str) {
     return str
@@ -37,9 +37,9 @@ export function transformDict(str) {
 /**
  * 从接口获取字典数据列表，当mapper或isCache是string类型是会作为key值
  * @param {function} api 获取接口数据方法，需返回Promise
- * @param {object} mapper 映射字段为value、label，默认映射id、name字段
+ * @param {object} mapper 映射字段为value、label，默认映射接口返回的id、name字段
  * @param {boolean} isCache 是否缓存接口数据，默认缓存
- * @param {string} key 接口返回状态值列表的字段，默认list
+ * @param {string} key 接口返回字典数据列表的字段，默认list
  */
 export function fetchDict(api, mapper, isCache, key = 'list') {
     const data = [];
@@ -100,10 +100,10 @@ export function fetchDict(api, mapper, isCache, key = 'list') {
 /**
  * 解析字典键值（转为字符串/数字）
  * @param {string} key 字典键值
- * @param {boolean} numeric 是否返回数字
+ * @param {boolean} numeric 是否返回数字，默认返回字符串
  */
 export function dictKey(key, numeric) {
-    return numeric ? Number(key) : String(key);
+    return !numeric ? String(key) : Number(key);
 }
 
 /**

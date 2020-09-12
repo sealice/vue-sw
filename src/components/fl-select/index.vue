@@ -12,12 +12,15 @@
         :value-key="valueKey"
         :collapse-tags="collapseTags"
     >
-        <el-option
-            v-for="item in items"
-            :key="item.value"
-            :value="isObject ? item : $dictKey(item.value, numeric)"
-            :label="item.label"
-        ></el-option>
+        <template v-for="item in items">
+            <slot :item="item">
+                <el-option
+                    :key="item.value"
+                    :value="isObject ? item : $dictKey(item.value, numeric)"
+                    :label="item.label"
+                ></el-option>
+            </slot>
+        </template>
     </el-select>
 </template>
 
