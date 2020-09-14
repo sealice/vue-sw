@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="margin: 0 auto; padding: 50px 0; width: 520px;">
         <p>
             <label for="" style="display: inline-block; width: 64px; text-align: right;">用户名：</label>
             <input v-model="username" type="text" />

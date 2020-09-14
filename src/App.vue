@@ -1,25 +1,29 @@
 <template>
-    <div id="app">
+    <div id="app" :class="{ layout }">
         <!-- layout -->
-        <template v-if="$route.meta.layout || $route.meta.layout === void 0">
-            <div id="nav" v-if="isLogin">
+        <template v-if="layout">
+            <div id="nav">
                 <router-link to="/">Home</router-link> | <router-link to="/about">About</router-link> |
                 <router-link to="/about/bar">About Bar</router-link>
             </div>
         </template>
 
-        <div class="main">
+        <div class="page">
             <router-view />
         </div>
     </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import './style/index.less';
 import { LOGOUT } from '@/store/types';
 
 export default {
-    computed: mapGetters(['isLogin']),
+    computed: {
+        layout() {
+            return this.$route.meta.layout;
+        },
+    },
     data() {
         return {};
     },
@@ -65,8 +69,6 @@ export default {
 </script>
 
 <style lang="less">
-@import './style/index.less';
-
 #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;

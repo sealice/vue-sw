@@ -7,6 +7,22 @@ body {
     height: 100%;
 }
 
+// .page {
+//     position: absolute;
+//     top: 0;
+//     left: 0;
+//     right: 0;
+//     bottom: 0;
+//     overflow: auto;
+//     box-sizing: border-box;
+
+//     .layout & {
+//         top: 60px;
+//         left: 250px;
+//         padding: 30px 30px;
+//     }
+// }
+
 .full-loading.el-loading-mask.is-fullscreen {
     background-color: transparent;
 
@@ -35,5 +51,37 @@ body {
 .el-form-item {
     .el-button {
         vertical-align: top;
+    }
+}
+
+.el-table {
+    &-action {
+        .el-link,
+        .el-button {
+            margin-right: 20px;
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+    }
+}
+
+.el-dialog {
+    &-form {
+        padding: 0 50px;
+    }
+    &-info {
+        padding: 0 50px;
+
+        &.el-form {
+            .el-form-item__label {
+                padding-right: 24px;
+                color: #909399;
+            }
+
+            .el-form-item {
+                margin-bottom: 7px;
+            }
+        }
     }
 }
