@@ -170,7 +170,7 @@ class Websocket {
     // static onopen(event) {}
     // static onclose(event) {}
     // static onconnecting(type) {}
-    // static onmessage(event) {}
+    // static onmessage(data, event) {}
     // static onerror(event) {}
 }
 
@@ -283,17 +283,19 @@ function _open(opts) {
     };
 
     ws.onmessage = function(event) {
+        let data = event.data;
+
         if (self.debug) {
-            console.debug('[' + name + ']:', 'on message.', '`' + event.data + '`');
+            console.debug('[' + name + ']:', 'on message.', '`' + data + '`');
         }
 
         try {
-            event.data = JSON.parse(event.data);
+            data = JSON.parse(data);
         } catch (err) {
             // do nothing
         }
 
-        self.onmessage && self.onmessage(event);
+        self.onmessage && self.onmessage(data, event);
         self.heartbeat(); // Retime the heartbeat
     };
 

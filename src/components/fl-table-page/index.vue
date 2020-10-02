@@ -10,10 +10,9 @@
             </el-table>
         </div>
 
-        <div class="fl-pagination">
+        <div class="fl-pagination" v-if="showPagination">
             <slot name="pagination" v-bind="{ page, pageSize, total, onSizeChange, onPageChange }">
                 <el-pagination
-                    v-if="showPagination"
                     :current-page="page"
                     :page-sizes="pageSizes"
                     :page-size="pageSize"
