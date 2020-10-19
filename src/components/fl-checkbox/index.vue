@@ -1,8 +1,12 @@
 <template>
-    <el-checkbox-group v-model="innerValue" v-on="$listeners" :disabled="disabled" :size="size" :min="min" :max="max">
-        <el-checkbox v-for="item in items" :key="item.value" :border="border" :label="$dictKey(item.value, numeric)">{{
-            item.label
-        }}</el-checkbox>
+    <el-checkbox-group v-on="$listeners" v-bind="$attrs" :value="value">
+        <template v-for="item in items">
+            <slot :item="item">
+                <el-checkbox :key="item.value" :label="$dictKey(item.value, numeric)" :border="border">{{
+                    item.label
+                }}</el-checkbox>
+            </slot>
+        </template>
     </el-checkbox-group>
 </template>
 
@@ -14,27 +18,17 @@ export default {
     //     ElCheckboxGroup: CheckboxGroup,
     //     ElCheckbox: Checkbox,
     // },
+    inheritAttrs: false,
     props: {
-        value: Array,
         data: Array,
         exclude: [String, Number, Array],
         dictKey: String,
         numeric: Boolean,
-        disabled: Boolean,
+        // Original props
+        value: Array,
         border: Boolean,
-        size: String,
-        min: Number,
-        max: Number,
     },
     computed: {
-        innerValue: {
-            get() {
-                return this.value;
-            },
-            set(value) {
-                this.$emit('input', value);
-            },
-        },
         items() {
             const exclude = this.exclude ? [].concat(this.exclude) : false;
             const items = this.data ? this.data : this.$getDict(this.dictKey);
@@ -44,18 +38,14 @@ export default {
     },
     methods: {
         resetValue() {
-            this.innerValue = [];
+            this.$emit('input', []);
         },
     },
     watch: {
-        data: 'resetValue',
-        dictKey: 'resetValue',
-        exclude() {
-            this.$nextTick(() => {
-                if (this.innerValue && !this.items.some(item => item.value == this.innerValue)) {
-                    this.resetValue();
-                }
-            });
+        items(list) {
+            if (this.value.some(value => list.some(item => item.value != value))) {
+                this.resetValue();
+            }
         },
     },
 };

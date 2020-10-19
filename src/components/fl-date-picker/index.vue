@@ -1,32 +1,26 @@
 <template>
-    <el-date-picker v-bind="defOptions" v-model="innerValue" v-on="$listeners"></el-date-picker>
+    <el-date-picker v-on="$listeners" v-bind="defOptions"></el-date-picker>
 </template>
 
 <script>
 // import { DatePicker } from 'element-ui';
+const _assign = Object.assign;
 
 export default {
     // components: {
     //     ElDatePicker: DatePicker,
     // },
+    inheritAttrs: false,
     props: {
         beforeDate: [String, Date],
         afterDate: [String, Date],
         width: String,
+        // Original props
         value: [String, Number, Array],
-        format: String,
-        align: String,
-        size: String,
-        readonly: Boolean,
-        disabled: Boolean,
         pickerOptions: Object,
         editable: {
             type: Boolean,
             default: false,
-        },
-        clearable: {
-            type: Boolean,
-            default: true,
         },
         placeholder: {
             type: String,
@@ -80,17 +74,9 @@ export default {
                 };
             }
 
-            props.pickerOptions = Object.assign(pickerOptions, props.pickerOptions);
+            props.pickerOptions = _assign(pickerOptions, props.pickerOptions);
 
-            return props;
-        },
-        innerValue: {
-            get() {
-                return this.value;
-            },
-            set(value) {
-                this.$emit('input', value);
-            },
+            return _assign(props, this.$attrs);
         },
     },
 };

@@ -1,8 +1,12 @@
 <template>
-    <el-radio-group v-model="innerValue" v-on="$listeners" :disabled="disabled" :size="size">
-        <el-radio v-for="item in items" :key="item.value" :border="border" :label="$dictKey(item.value, numeric)">{{
-            item.label
-        }}</el-radio>
+    <el-radio-group v-on="$listeners" v-bind="$attrs" :value="value">
+        <template v-for="item in items">
+            <slot :item="item">
+                <el-radio :key="item.value" :label="$dictKey(item.value, numeric)" :border="border">{{
+                    item.label
+                }}</el-radio>
+            </slot>
+        </template>
     </el-radio-group>
 </template>
 
@@ -14,25 +18,17 @@ export default {
     //     ElRadioGroup: RadioGroup,
     //     ElRadio: Radio,
     // },
+    inheritAttrs: false,
     props: {
-        value: [String, Number],
         data: Array,
         exclude: [String, Number, Array],
         dictKey: String,
         numeric: Boolean,
-        disabled: Boolean,
+        // Original props
+        value: [String, Number],
         border: Boolean,
-        size: String,
     },
     computed: {
-        innerValue: {
-            get() {
-                return this.value;
-            },
-            set(value) {
-                this.$emit('input', value);
-            },
-        },
         items() {
             const exclude = this.exclude ? [].concat(this.exclude) : false;
             const items = this.data ? this.data : this.$getDict(this.dictKey);
@@ -42,18 +38,14 @@ export default {
     },
     methods: {
         resetValue() {
-            this.innerValue = '';
+            this.$emit('input', '');
         },
     },
     watch: {
-        data: 'resetValue',
-        dictKey: 'resetValue',
-        exclude() {
-            this.$nextTick(() => {
-                if (this.innerValue && !this.items.some(item => item.value == this.innerValue)) {
-                    this.resetValue();
-                }
-            });
+        items(list) {
+            if (this.value && !list.some(item => item.value == this.value)) {
+                this.resetValue();
+            }
         },
     },
 };

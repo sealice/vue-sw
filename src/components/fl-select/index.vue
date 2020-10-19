@@ -1,17 +1,5 @@
 <template>
-    <el-select
-        v-model="innerValue"
-        v-on="$listeners"
-        :style="style"
-        :clearable="clearable"
-        :disabled="disabled"
-        :filterable="filterable"
-        :placeholder="placeholder"
-        :multiple="multiple"
-        :size="size"
-        :value-key="valueKey"
-        :collapse-tags="collapseTags"
-    >
+    <el-select v-on="$listeners" v-bind="$attrs" :style="style" :value="value" :multiple="multiple">
         <template v-for="item in items">
             <slot :item="item">
                 <el-option
@@ -32,35 +20,19 @@ export default {
     //     ElSelect: Select,
     //     ElOption: Option,
     // },
+    inheritAttrs: false,
     props: {
-        value: [String, Number, Array, Object],
         data: Array,
         width: String,
         exclude: [String, Number, Array],
         dictKey: String,
         numeric: Boolean,
         isObject: Boolean,
-        filterable: Boolean,
-        disabled: Boolean,
+        // Original props
+        value: [String, Number, Array, Object],
         multiple: Boolean,
-        collapseTags: Boolean,
-        size: String,
-        valueKey: String,
-        placeholder: String,
-        clearable: {
-            type: Boolean,
-            default: true,
-        },
     },
     computed: {
-        innerValue: {
-            get() {
-                return this.value;
-            },
-            set(value) {
-                this.$emit('input', value);
-            },
-        },
         items() {
             const exclude = this.exclude ? [].concat(this.exclude) : false;
             const items = this.data ? this.data : this.$getDict(this.dictKey);
@@ -78,18 +50,20 @@ export default {
     },
     methods: {
         resetValue() {
-            this.innerValue = this.multiple ? [] : '';
+            this.$emit('input', this.multiple ? [] : '');
         },
     },
     watch: {
-        data: 'resetValue',
-        dictKey: 'resetValue',
-        exclude() {
-            this.$nextTick(() => {
-                if (this.innerValue && !this.items.some(item => item.value == this.innerValue)) {
+        items(list) {
+            if (this.multiple) {
+                if (this.value.some(value => list.some(item => item.value != value))) {
                     this.resetValue();
                 }
-            });
+            } else {
+                if (this.value && !list.some(item => item.value == this.value)) {
+                    this.resetValue();
+                }
+            }
         },
     },
 };

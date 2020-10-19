@@ -1,14 +1,16 @@
 <template>
-    <el-date-picker v-bind="defOptions" v-model="innerValue" v-on="$listeners"></el-date-picker>
+    <el-date-picker v-on="$listeners" v-bind="defOptions" v-model="innerValue"></el-date-picker>
 </template>
 
 <script>
 // import { DatePicker } from 'element-ui';
+const _assign = Object.assign;
 
 export default {
     // components: {
     //     ElDatePicker: DatePicker,
     // },
+    inheritAttrs: false,
     props: {
         // 开始时间，需使用sync修饰符
         startTime: {
@@ -25,20 +27,12 @@ export default {
         beforeDate: [String, Date],
         afterDate: [String, Date],
         width: String,
+        // Original props
         value: Array,
-        format: String,
-        align: String,
-        size: String,
-        readonly: Boolean,
-        disabled: Boolean,
         pickerOptions: Object,
         editable: {
             type: Boolean,
             default: false,
-        },
-        clearable: {
-            type: Boolean,
-            default: true,
         },
         startPlaceholder: {
             type: String,
@@ -93,13 +87,13 @@ export default {
                 };
             }
 
-            props.pickerOptions = Object.assign(pickerOptions, props.pickerOptions);
+            props.pickerOptions = _assign(pickerOptions, props.pickerOptions);
 
-            return props;
+            return _assign(props, this.$attrs);
         },
         innerValue: {
             get() {
-                if (this.value) {
+                if (this.$listeners.input) {
                     return this.value;
                 }
 
@@ -113,7 +107,7 @@ export default {
                     endTime += ' 23:59:59';
                 }
 
-                if (this.value) {
+                if (this.$listeners.input) {
                     this.$emit('input', [startTime, endTime]);
                 } else {
                     this.$emit('update:start-time', startTime);
