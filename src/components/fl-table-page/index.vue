@@ -30,16 +30,11 @@
 
 <script>
 import TablePageMixins from '@/mixins/table-page';
-// import { Table, Pagination } from 'element-ui';
 
 const _assign = Object.assign;
 
 export default {
     mixins: [TablePageMixins],
-    // components: {
-    //     ElTable: Table,
-    //     ElPagination: Pagination,
-    // },
     props: {
         getDataMethod: Function,
         delDataMethod: Function,

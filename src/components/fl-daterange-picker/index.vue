@@ -3,13 +3,9 @@
 </template>
 
 <script>
-// import { DatePicker } from 'element-ui';
 const _assign = Object.assign;
 
 export default {
-    // components: {
-    //     ElDatePicker: DatePicker,
-    // },
     inheritAttrs: false,
     props: {
         // 开始时间，需使用sync修饰符

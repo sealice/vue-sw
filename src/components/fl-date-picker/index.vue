@@ -3,13 +3,9 @@
 </template>
 
 <script>
-// import { DatePicker } from 'element-ui';
 const _assign = Object.assign;
 
 export default {
-    // components: {
-    //     ElDatePicker: DatePicker,
-    // },
     inheritAttrs: false,
     props: {
         beforeDate: [String, Date],

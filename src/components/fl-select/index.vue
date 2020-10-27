@@ -1,10 +1,17 @@
 <template>
-    <el-select v-on="$listeners" v-bind="$attrs" :style="style" :value="value" :multiple="multiple">
+    <el-select
+        v-on="$listeners"
+        v-bind="$attrs"
+        :style="style"
+        :value="value"
+        :multiple="multiple"
+        :value-key="valueKey"
+    >
         <template v-for="item in items">
-            <slot :item="item">
+            <slot v-bind="{ item, toKey }">
                 <el-option
                     :key="item.value"
-                    :value="isObject ? item : $dictKey(item.value, numeric)"
+                    :value="isObject ? item : toKey(item[valueKey], numeric)"
                     :label="item.label"
                 ></el-option>
             </slot>
@@ -13,13 +20,9 @@
 </template>
 
 <script>
-// import { Select, Option } from 'element-ui';
+import { dictKey, getDict } from '@/filter/dict';
 
 export default {
-    // components: {
-    //     ElSelect: Select,
-    //     ElOption: Option,
-    // },
     inheritAttrs: false,
     props: {
         data: Array,
@@ -31,11 +34,12 @@ export default {
         // Original props
         value: [String, Number, Array, Object],
         multiple: Boolean,
+        valueKey: { type: String, default: 'value' },
     },
     computed: {
         items() {
+            const items = [].concat(this.data || getDict(this.dictKey));
             const exclude = this.exclude ? [].concat(this.exclude) : false;
-            const items = this.data ? this.data : this.$getDict(this.dictKey);
 
             return !exclude ? items : items.filter(item => !exclude.some(val => val == item.value));
         },
@@ -49,6 +53,7 @@ export default {
         },
     },
     methods: {
+        toKey: dictKey,
         resetValue() {
             this.$emit('input', this.multiple ? [] : '');
         },
@@ -56,7 +61,7 @@ export default {
     watch: {
         items(list) {
             if (this.multiple) {
-                if (this.value.some(value => list.some(item => item.value != value))) {
+                if (this.value.some(value => !list.some(item => item.value == value))) {
                     this.resetValue();
                 }
             } else {
