@@ -41,7 +41,7 @@ export default {
             const items = [].concat(this.data || getDict(this.dictKey));
             const exclude = this.exclude ? [].concat(this.exclude) : false;
 
-            return !exclude ? items : items.filter(item => !exclude.some(val => val == item.value));
+            return !exclude ? items : items.filter(item => !exclude.some(val => val == item[this.valueKey]));
         },
         style() {
             const width = this.width;
@@ -61,11 +61,19 @@ export default {
     watch: {
         items(list) {
             if (this.multiple) {
-                if (this.value.some(value => !list.some(item => item.value == value))) {
+                if (
+                    this.value.some(
+                        value =>
+                            !list.some(item => item[this.valueKey] == (this.isObject ? value[this.valueKey] : value))
+                    )
+                ) {
                     this.resetValue();
                 }
             } else {
-                if (this.value && !list.some(item => item.value == this.value)) {
+                if (
+                    this.value &&
+                    !list.some(item => item[this.valueKey] == (this.isObject ? this.value[this.valueKey] : this.value))
+                ) {
                     this.resetValue();
                 }
             }

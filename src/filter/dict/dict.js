@@ -134,7 +134,7 @@ export function setDict(key, dict) {
         }
 
         if (!data[k]) {
-            data = data[k] = {};
+            data = data[k] = Vue.observable({});
             continue;
         }
 
