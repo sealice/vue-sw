@@ -9,15 +9,17 @@ module.exports = {
     ],
   ],
   plugins: [
-    // [
-    //   'component',
-    //   {
-    //     libraryName: 'element-ui',
-    //     styleLibraryName: 'theme-chalk',
-    //   },
-    // ],
+    [
+      'component',
+      {
+        libraryName: 'element-ui',
+        libDir: 'packages',
+        styleLibraryName: '../lib/theme-chalk',
+      },
+    ],
     '@babel/plugin-proposal-export-default-from',
     '@babel/plugin-syntax-export-default-from',
+    '@vue/babel-plugin-transform-vue-jsx',
     'lodash',
   ],
 };

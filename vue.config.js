@@ -13,7 +13,7 @@ module.exports = {
 
   lintOnSave: true,
   productionSourceMap: false,
-  transpileDependencies: [],
+  transpileDependencies: ['element-ui'],
 
   configureWebpack: {
     plugins: [

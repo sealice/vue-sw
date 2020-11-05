@@ -6,8 +6,7 @@ import { LOGGED_GET } from './store/types';
 import './registerServiceWorker';
 
 // ElementUI
-import 'element-ui/lib/theme-chalk/index.css';
-import ElementUI from 'element-ui';
+import ElementUI from './utils/element-ui';
 Vue.use(ElementUI);
 
 // 过滤器
