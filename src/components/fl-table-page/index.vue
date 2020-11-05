@@ -35,11 +35,11 @@ const _assign = Object.assign;
 
 export default {
     mixins: [TablePageMixins],
+    inheritAttrs: false,
     props: {
         getDataMethod: Function,
         delDataMethod: Function,
         defQueryForm: Object,
-        options: Object,
         showPagination: {
             type: Boolean,
             default: true,
@@ -51,7 +51,7 @@ export default {
     },
     computed: {
         defOptions() {
-            return _assign({}, this.tableOptions, this.options);
+            return _assign({}, this.tableOptions, this.$attrs);
         },
     },
     data() {
