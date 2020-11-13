@@ -115,8 +115,8 @@ const components = [
     Table,
     TableColumn,
     DatePicker,
-    // TimeSelect,
-    // TimePicker,
+    TimeSelect,
+    TimePicker,
     Popover,
     Tooltip,
     Breadcrumb,
@@ -168,7 +168,7 @@ const components = [
     CollapseTransition,
 ];
 
-export default function(Vue, opts = {}) {
+export default function install(Vue, opts = {}) {
     locale.use(opts.locale);
     locale.i18n(opts.i18n);
 

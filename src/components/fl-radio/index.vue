@@ -18,6 +18,7 @@
 import { dictKey, getDict } from '@/filter/dict';
 
 export default {
+    name: 'FlRadio',
     inheritAttrs: false,
     props: {
         data: Array,

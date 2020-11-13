@@ -18,6 +18,7 @@
 import { dictKey, getDict } from '@/filter/dict';
 
 export default {
+    name: 'FlCheckbox',
     inheritAttrs: false,
     props: {
         data: Array,

@@ -10,6 +10,7 @@
 import pathToRegexp from 'path-to-regexp';
 
 export default {
+    name: 'FlBreadcrumb',
     computed: {
         navs() {
             const navs = [];

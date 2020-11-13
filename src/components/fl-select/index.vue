@@ -23,6 +23,7 @@
 import { dictKey, getDict } from '@/filter/dict';
 
 export default {
+    name: 'FlSelect',
     inheritAttrs: false,
     props: {
         data: Array,

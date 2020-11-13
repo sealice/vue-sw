@@ -34,6 +34,7 @@ import TablePageMixins from '@/mixins/table-page';
 const _assign = Object.assign;
 
 export default {
+    name: 'FlTablePage',
     mixins: [TablePageMixins],
     inheritAttrs: false,
     props: {

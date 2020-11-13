@@ -6,6 +6,7 @@
 const _assign = Object.assign;
 
 export default {
+    name: 'FlDaterangePicker',
     inheritAttrs: false,
     props: {
         // 开始时间，需使用sync修饰符

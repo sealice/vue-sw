@@ -6,6 +6,7 @@
 const _assign = Object.assign;
 
 export default {
+    name: 'FlDatePicker',
     inheritAttrs: false,
     props: {
         beforeDate: [String, Date],
