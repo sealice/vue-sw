@@ -27,11 +27,12 @@ const setLoading = loadingText => {
 };
 
 const showLoading = loading => {
+    acitveAxios++;
+
     if (loading !== undefined && !loading) {
         return;
     }
 
-    acitveAxios++;
     timer = timer && clearTimeout(timer);
     if (loading) {
         setLoading(loading);

@@ -64,8 +64,8 @@ export default {
                 pickerOptions = {
                     disabledDate(date) {
                         return (
-                            (beforeDate && date < new Date(beforeDate == 'now' ? now - 864e5 : toLocal(beforeDate))) ||
-                            (afterDate && date > new Date(afterDate == 'now' ? now : toLocal(afterDate)))
+                            (afterDate && date < new Date(afterDate == 'now' ? now - 864e5 : toLocal(afterDate))) ||
+                            (beforeDate && date > new Date(beforeDate == 'now' ? now : toLocal(beforeDate)))
                         );
                     },
                 };
