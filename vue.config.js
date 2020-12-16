@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const LodashWebpackPlugin = require('lodash-webpack-plugin');
 const { GenerateSW } = require('workbox-webpack-plugin');
+const middleware = require('hm-middleware');
 
 module.exports = {
   publicPath: '/',
@@ -9,6 +10,22 @@ module.exports = {
 
   devServer: {
     proxy: null,
+
+    after: function(app) {
+      // 使用 mock api
+      app.use(
+        middleware({
+          mockRules: {
+            '/v1': 'mock',
+          },
+          proxy: {
+            autoSave: true,
+            saveDirectory: '.data',
+            overrideSameFile: 'override',
+          },
+        })
+      );
+    },
   },
 
   lintOnSave: true,
@@ -72,6 +89,7 @@ module.exports = {
           _.merge(arg, {
             terserOptions: {
               compress: {
+                drop_debugger: true,
                 pure_funcs: ['console.log'], // 打包移除console.log
               },
             },

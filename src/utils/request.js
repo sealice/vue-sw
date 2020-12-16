@@ -61,6 +61,16 @@ const requestInterceptors = [
             cfg.data = buildURL('', cfg.data).substr(1);
         }
 
+        // 配置开发模式的代理环境
+        if (process.env.NODE_ENV === 'development') {
+            const proxyEnv = localStorage.proxyEnv || 'dev';
+            const proxyHost = require('../../mock.proxy');
+            if (proxyHost[proxyEnv]) {
+                cfg.headers = cfg.headers || {};
+                cfg.headers['X-Mock-Proxy'] = proxyHost[proxyEnv];
+            }
+        }
+
         return cfg;
     },
 ];
