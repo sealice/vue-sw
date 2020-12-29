@@ -1,5 +1,5 @@
 <template>
-    <el-date-picker v-on="$listeners" v-bind="defOptions" v-model="innerValue"></el-date-picker>
+    <el-date-picker v-on="listeners" v-bind="defOptions" v-model="innerValue"></el-date-picker>
 </template>
 
 <script>
@@ -62,6 +62,11 @@ export default {
         },
     },
     computed: {
+        listeners() {
+            // eslint-disable-next-line no-unused-vars
+            const { input, ...listeners } = this.$listeners;
+            return listeners;
+        },
         defOptions() {
             let pickerOptions = {};
             // eslint-disable-next-line no-unused-vars

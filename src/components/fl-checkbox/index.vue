@@ -7,6 +7,7 @@
                     :key="item.value"
                     :label="toKey(item.value, numeric)"
                     :border="border"
+                    :disabled="item.disabled"
                     >{{ item.label }}</component
                 >
             </slot>

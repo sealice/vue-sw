@@ -13,6 +13,7 @@
                     :key="item.value"
                     :value="isObject ? item : toKey(item[valueKey], numeric)"
                     :label="item.label"
+                    :disabled="item.disabled"
                 ></el-option>
             </slot>
         </template>

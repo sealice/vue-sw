@@ -13,7 +13,7 @@ export default {
         afterDate: [String, Date],
         width: String,
         // Original props
-        value: [String, Number, Array],
+        value: [String, Date],
         pickerOptions: Object,
         editable: {
             type: Boolean,

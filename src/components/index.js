@@ -1,8 +1,11 @@
-const ctx = require.context('.', true, /\.vue$/);
-const components = ctx.keys().map(key => ctx(key).default);
+import * as Components from './components';
 
 export default function install(Vue) {
-    components.forEach(component => {
-        Vue.component(component.name, component);
-    });
+    for (let [k, v] of Object.entries(Components)) {
+        if (!v.name) {
+            v.name = k;
+        }
+
+        Vue.component(v.name, v);
+    }
 }
