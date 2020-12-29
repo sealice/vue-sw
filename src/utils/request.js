@@ -1,6 +1,6 @@
 import axios from 'axios';
 import buildURL from 'axios/lib/helpers/buildURL';
-import { merge, deepMerge, isString } from 'axios/lib/utils';
+import { merge, deepMerge, isString, isUndefined } from 'axios/lib/utils';
 import { Message } from 'element-ui';
 import bus from './bus';
 
@@ -29,7 +29,7 @@ const setLoading = loadingText => {
 const showLoading = loading => {
     acitveAxios++;
 
-    if (loading !== undefined && !loading) {
+    if (!isUndefined(loading) && !loading) {
         return;
     }
 
@@ -82,14 +82,16 @@ const responseInterceptors = [
 
         const { config: cfg, data } = res;
         res.ok = true;
-        if (cfg.errMsg === void 0) cfg.errMsg = '系统繁忙！';
 
-        if (!cfg.disableInterceptor) {
+        if (!cfg.noIntercept) {
             if (data.code == 0) {
                 return data;
             }
 
-            cfg.errMsg && Message.error(data.msg || cfg.errMsg);
+            if (cfg.errMsg || isUndefined(cfg.errMsg)) {
+                Message.error(cfg.errMsg || data.msg || '系统繁忙！');
+            }
+
             return Promise.reject(res);
         }
 
@@ -144,6 +146,21 @@ const serviceCreate = config => {
 };
 
 const service = serviceCreate();
+
+/** 默认不带参数的Get请求 */
+export function get(url) {
+    return config => service.get(url, config);
+}
+
+/** 带参数的Get请求 */
+export function getParams(url) {
+    return (params, config) => service.get(url, merge(config, { params }));
+}
+
+/** 默认的Post请求 */
+export function post(url) {
+    return (data, config) => service.post(url, data, config);
+}
 
 export { serviceCreate, service, merge, deepMerge };
 
