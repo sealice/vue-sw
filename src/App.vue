@@ -16,54 +16,61 @@
 
 <script>
 import './style/index.less';
+import { computed } from 'vue';
+import { useStore } from 'vuex';
+import { useRoute, useRouter } from 'vue-router';
+import { ElLoading, ElMessage } from 'element-plus';
 import { LOGOUT } from '@/store/types';
+import bus from '@/utils/bus';
 
 export default {
-    computed: {
-        layout() {
-            return this.$route.meta.layout;
-        },
-    },
-    data() {
-        return {};
-    },
-    created() {
+    setup() {
         let loadingInstance;
+        const store = useStore();
+        const route = useRoute();
+        const router = useRouter();
+        const layout = computed(() => route.meta.layout);
 
-        this.$bus
-            // 显示全屏loading
-            .on('loading:show', ({ text } = {}) => {
-                loadingInstance = this.$loading({
-                    text,
-                    lock: true,
-                    fullscreen: true,
-                    customClass: 'full-loading',
-                });
-            })
-            // 隐藏全屏loading
-            .on('loading:hide', () => {
-                if (loadingInstance) {
-                    loadingInstance = loadingInstance.close();
-                }
-            })
-            // 退出登录
-            .on('logout', showMessage => {
-                this.$store.dispatch(LOGOUT).then(() => {
-                    if (showMessage) {
-                        this.$message.success('已安全退出登录！');
-                    }
-
-                    this.$router.replace({
-                        path: '/login',
-                        query: { redirect: this.$route.fullPath },
-                    });
-                });
-            })
-            // 更新版本，可以先做个更新提示
-            .on('updated-version', registration => {
-                registration.waiting.postMessage({ type: 'SKIP_WAITING' });
-                location.reload();
+        // 显示全屏loading
+        bus.on('loading:show', ({ text } = {}) => {
+            loadingInstance = ElLoading.service({
+                text,
+                lock: true,
+                fullscreen: true,
+                customClass: 'full-loading',
             });
+        });
+
+        // 隐藏全屏loading
+        bus.on('loading:hide', () => {
+            if (loadingInstance) {
+                loadingInstance = loadingInstance.close();
+            }
+        });
+
+        // 退出登录
+        bus.on('logout', showMessage => {
+            store.dispatch(LOGOUT).then(() => {
+                if (showMessage) {
+                    ElMessage.success('已安全退出登录！');
+                }
+
+                router.replace({
+                    path: '/login',
+                    query: { redirect: route.fullPath },
+                });
+            });
+        });
+
+        // 更新版本，可以先做个更新提示
+        bus.on('updated-version', registration => {
+            registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+            location.reload();
+        });
+
+        return {
+            layout,
+        };
     },
 };
 </script>

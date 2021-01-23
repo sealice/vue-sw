@@ -1,11 +1,11 @@
 <template>
     <div class="fl-table-page">
-        <div class="fl-search" v-if="$slots.search || $scopedSlots.search">
+        <div class="fl-search" v-if="$slots.search">
             <slot name="search" v-bind="{ queryForm, tableLoading, onRefresh, onSearch }"></slot>
         </div>
 
         <div class="fl-table" v-loading="tableLoading">
-            <el-table v-bind="defOptions" v-on="$listeners" :data="tableData">
+            <el-table v-bind="attrs" :data="tableData">
                 <slot name="table" v-bind="{ tableIndex, onRefresh, onRemove }"></slot>
             </el-table>
         </div>
@@ -29,46 +29,27 @@
 </template>
 
 <script>
-import TablePageMixins from '@/mixins/table-page';
-
-const _assign = Object.assign;
+import { mergeProps } from 'vue';
+import useTablePage from '@/basal/model/useTablePage';
 
 export default {
     name: 'FlTablePage',
-    mixins: [TablePageMixins],
     inheritAttrs: false,
     props: {
         getDataFunc: Function,
         delDataFunc: Function,
         defQueryForm: Object,
-        showPagination: {
-            type: Boolean,
-            default: true,
-        },
-        autoload: {
-            type: Boolean,
-            default: true,
-        },
+        autoload: { type: Boolean, default: true },
+        updateWithUrl: { type: Boolean, default: true },
+        showPagination: { type: Boolean, default: true },
     },
-    computed: {
-        defOptions() {
-            return _assign({}, this.tableOptions, this.$attrs);
-        },
-    },
-    data() {
-        return {
-            isAutoload: this.autoload,
-            queryForm: _assign({}, this.defQueryForm),
-        };
-    },
-    created() {
-        if (this.getDataFunc) {
-            this.getData = this.getDataFunc;
-        }
+    setup(props, { attrs }) {
+        const { tableOptions, ...opts } = useTablePage(props);
 
-        if (this.delDataFunc) {
-            this.delData = this.delDataFunc;
-        }
+        return {
+            ...opts,
+            attrs: mergeProps(tableOptions, attrs),
+        };
     },
 };
 </script>

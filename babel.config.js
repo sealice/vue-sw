@@ -12,8 +12,8 @@ module.exports = {
     [
       'component',
       {
-        libraryName: 'element-ui',
-        libDir: 'packages',
+        libraryName: 'element-plus',
+        libDir: 'lib',
         styleLibraryName: '../lib/theme-chalk',
       },
     ],

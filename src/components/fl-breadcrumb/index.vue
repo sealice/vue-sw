@@ -7,22 +7,28 @@
 </template>
 
 <script>
+import { computed } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import pathToRegexp from 'path-to-regexp';
 
 export default {
     name: 'FlBreadcrumb',
-    computed: {
-        navs() {
+    setup() {
+        const router = useRouter();
+        const route = useRoute();
+        const navs = computed(() => {
             const navs = [];
-            const paths = this.$route.path.split('/');
-            const routes = this.$router.options.routes;
+            const paths = route.path.split('/');
+            const routes = router.options.routes;
+            const len = routes.length;
+            const size = paths.length;
 
-            for (let i = 0, r = 1, len = routes.length, size = paths.length; i < len; i++) {
+            for (let i = 0, r = 1; i < len; i++) {
                 const path = paths.slice(0, r).join('/') || '/';
                 if (pathToRegexp(routes[i].path).test(path)) {
                     navs.push({
                         path: path,
-                        title: routes[i].meta.title,
+                        title: routes[i].meta?.title,
                     });
 
                     r += 1;
@@ -33,7 +39,11 @@ export default {
             }
 
             return navs;
-        },
+        });
+
+        return {
+            navs,
+        };
     },
 };
 </script>

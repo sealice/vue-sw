@@ -1,31 +1,25 @@
 <template>
-    <el-date-picker v-on="listeners" v-bind="defOptions" v-model="innerValue"></el-date-picker>
+    <el-date-picker v-bind="defOptions" v-model="innerValue"></el-date-picker>
 </template>
 
 <script>
-const _assign = Object.assign;
+import { computed, mergeProps } from 'vue';
 
 export default {
     name: 'FlDaterangePicker',
     inheritAttrs: false,
     props: {
-        // 开始时间，需使用sync修饰符
-        startTime: {
-            type: [String, Number],
-            default: '',
-        },
-        // 结束时间，需使用sync修饰符
-        endTime: {
-            type: [String, Number],
-            default: '',
-        },
+        // 开始时间
+        startTime: [String, Date],
+        // 结束时间
+        endTime: [String, Date],
         // 是否补全时间，开始时间补00:00:00，结束时间补23:59:59
         completionTime: Boolean,
         beforeDate: [String, Date],
         afterDate: [String, Date],
         width: String,
         // Original props
-        value: Array,
+        modelValue: Array,
         pickerOptions: Object,
         editable: {
             type: Boolean,
@@ -46,77 +40,78 @@ export default {
                 return ['monthrange', 'daterange', 'datetimerange'].indexOf(value) !== -1;
             },
         },
-        valueFormat: {
-            type: String,
-            default() {
-                const dateFormat = ['yyyy', 'MM', 'dd'];
-                switch (this.type) {
-                    case 'monthrange':
-                        return dateFormat.slice(0, 2).join('-');
-                    case 'datetimerange':
-                        return dateFormat.join('-') + ' HH:mm:ss';
-                    default:
-                        return dateFormat.join('-');
-                }
-            },
-        },
+        // valueFormat: {
+        //     type: String,
+        //     default(props) {
+        //         const dateFormat = ['yyyy', 'MM', 'dd'];
+        //         switch (props.type) {
+        //             case 'monthrange':
+        //                 return dateFormat.slice(0, 2).join('-');
+        //             case 'datetimerange':
+        //                 return dateFormat.join('-') + ' HH:mm:ss';
+        //             default:
+        //                 return dateFormat.join('-');
+        //         }
+        //     },
+        // },
     },
-    computed: {
-        listeners() {
-            // eslint-disable-next-line no-unused-vars
-            const { input, ...listeners } = this.$listeners;
-            return listeners;
-        },
-        defOptions() {
-            let pickerOptions = {};
-            // eslint-disable-next-line no-unused-vars
-            const { startTime, endTime, completionTime, beforeDate, afterDate, width, ...props } = this.$props;
+    setup(props, { attrs, emit }) {
+        const isValue = 'modelValue' in props;
+        const defOptions = computed(() => {
+            /* eslint-disable no-unused-vars */
+
+            const { startTime, endTime, completionTime, beforeDate, afterDate, width, ...options } = mergeProps(
+                props,
+                attrs
+            );
             const toLocal = date => (typeof date === 'string' ? date.replace(/-/g, '/') : date);
 
-            if (width) {
-                props.style = { width: !Number(width) ? width : width + 'px' };
+            if (width && !options.style) {
+                options.style = { width: !Number(width) ? width : width + 'px' };
             }
 
             if (beforeDate || afterDate) {
                 const now = new Date();
-                pickerOptions = {
-                    disabledDate(date) {
-                        return (
-                            (afterDate && date < new Date(afterDate == 'now' ? now - 864e5 : toLocal(afterDate))) ||
-                            (beforeDate && date > new Date(beforeDate == 'now' ? now : toLocal(beforeDate)))
-                        );
-                    },
+                options.disabledDate = function disabledDate(date) {
+                    return (
+                        (afterDate && date < new Date(afterDate == 'now' ? +now - 864e5 : toLocal(afterDate))) ||
+                        (beforeDate && date > new Date(beforeDate == 'now' ? now : toLocal(beforeDate)))
+                    );
                 };
             }
 
-            props.pickerOptions = _assign(pickerOptions, props.pickerOptions);
+            return options;
+        });
 
-            return _assign(props, this.$attrs);
-        },
-        innerValue: {
+        const innerValue = computed({
             get() {
-                if (this.$listeners.input) {
-                    return this.value;
-                }
-
-                return [this.startTime, this.endTime];
+                return isValue
+                    ? props.modelValue
+                    : props.startTime && props.endTime
+                    ? [props.startTime, props.endTime].map(date => new Date(date))
+                    : [];
             },
             set(value) {
                 let [startTime, endTime] = value || ['', ''];
 
-                if (this.completionTime && this.type == 'daterange' && startTime && endTime) {
+                if (props.completionTime && props.type == 'daterange' && startTime && endTime) {
                     startTime += ' 00:00:00';
                     endTime += ' 23:59:59';
                 }
 
-                if (this.$listeners.input) {
-                    this.$emit('input', [startTime, endTime]);
+                if (isValue) {
+                    emit('update:modelValue', [startTime, endTime]);
                 } else {
-                    this.$emit('update:start-time', startTime);
-                    this.$emit('update:end-time', endTime);
+                    emit('update:startTime', startTime);
+                    emit('update:endTime', endTime);
                 }
             },
-        },
+        });
+
+        return {
+            defOptions,
+            innerValue,
+        };
     },
 };
 </script>

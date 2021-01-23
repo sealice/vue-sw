@@ -1,12 +1,9 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
+import { createStore } from 'vuex';
 import menu from './modules/menu';
 import user from './modules/user';
 
-Vue.use(Vuex);
-
 /* eslint-disable no-unused-vars */
-export default new Vuex.Store({
+export default createStore({
     modules: {
         menu,
         user,

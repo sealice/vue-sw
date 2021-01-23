@@ -1,25 +1,20 @@
-import Vue from 'vue';
+import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
 import store from './store';
 import { LOGGED_GET } from './store/types';
 import './registerServiceWorker';
 
+const app = createApp(App);
+app.use(store).use(router);
+
 // ElementUI
-import ElementUI from './utils/element-ui';
-Vue.use(ElementUI);
-
-// 过滤器
-import filter from './filter';
-Vue.use(filter);
-
-// 公共Vue实例，用于数据通信
-import bus from './utils/bus';
-Vue.use(bus);
+import ElementUI from './utils/element-plus';
+app.use(ElementUI);
 
 // 公共组件
 import Components from './components';
-Vue.use(Components);
+app.use(Components);
 
 // 路由拦截（前置守卫）
 router.beforeEach((to, from, next) => {
@@ -42,8 +37,4 @@ router.beforeEach((to, from, next) => {
     });
 });
 
-new Vue({
-    store,
-    router,
-    render: h => h(App),
-}).$mount('#app');
+app.mount('#app');

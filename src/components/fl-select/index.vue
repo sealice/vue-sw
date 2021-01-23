@@ -1,12 +1,5 @@
 <template>
-    <el-select
-        v-on="$listeners"
-        v-bind="$attrs"
-        :style="style"
-        :value="value"
-        :multiple="multiple"
-        :value-key="valueKey"
-    >
+    <el-select v-bind="$attrs" :style="style" :model-value="modelValue" :value-key="valueKey" :multiple="multiple">
         <template v-for="item in items">
             <slot v-bind="{ item, toKey }">
                 <el-option
@@ -21,7 +14,8 @@
 </template>
 
 <script>
-import { dictKey, getDict } from '@/filter/dict';
+import { computed, watch } from 'vue';
+import { dictKey, getDict } from '@/basal/dict';
 
 export default {
     name: 'FlSelect',
@@ -34,52 +28,59 @@ export default {
         numeric: Boolean,
         isObject: Boolean,
         // Original props
-        value: [String, Number, Array, Object],
+        modelValue: [String, Number, Array, Object],
         multiple: Boolean,
         valueKey: { type: String, default: 'value' },
     },
-    computed: {
-        items() {
-            const items = [].concat(this.data || getDict(this.dictKey));
-            const exclude = this.exclude ? [].concat(this.exclude) : false;
+    setup(props, { emit }) {
+        const data = props.data ?? getDict(props.dictKey);
+        const resetValue = () => emit('update:modelValue', props.multiple ? [] : '');
 
-            return !exclude ? items : items.filter(item => !exclude.some(val => val == item[this.valueKey]));
-        },
-        style() {
-            const width = this.width;
+        const items = computed(() => {
+            const exclude = props.exclude ? [].concat(props.exclude) : false;
+            return !exclude ? data : data.filter(item => !exclude.some(val => val == item[props.valueKey]));
+        });
+
+        const style = computed(() => {
+            const width = props.width;
             if (width) {
                 return { width: !Number(width) ? width : width + 'px' };
             }
 
             return {};
-        },
-    },
-    methods: {
-        toKey: dictKey,
-        resetValue() {
-            this.$emit('input', this.multiple ? [] : '');
-        },
-    },
-    watch: {
-        items(list) {
-            if (this.multiple) {
+        });
+
+        watch(items, list => {
+            if (props.multiple) {
                 if (
-                    this.value.some(
-                        value =>
-                            !list.some(item => item[this.valueKey] == (this.isObject ? value[this.valueKey] : value))
-                    )
+                    props.modelValue?.some(value => {
+                        return !list.some(item => {
+                            return item[props.valueKey] == (props.isObject ? value[props.valueKey] : value);
+                        });
+                    })
                 ) {
-                    this.resetValue();
+                    resetValue();
                 }
             } else {
                 if (
-                    this.value &&
-                    !list.some(item => item[this.valueKey] == (this.isObject ? this.value[this.valueKey] : this.value))
+                    props.modelValue &&
+                    !list.some(item => {
+                        return (
+                            item[props.valueKey] ==
+                            (props.isObject ? props.modelValue?.[props.valueKey] : props.modelValue)
+                        );
+                    })
                 ) {
-                    this.resetValue();
+                    resetValue();
                 }
             }
-        },
+        });
+
+        return {
+            items,
+            style,
+            toKey: dictKey,
+        };
     },
 };
 </script>

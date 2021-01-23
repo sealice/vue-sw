@@ -1,5 +1,5 @@
 <template>
-    <el-checkbox-group v-on="$listeners" v-bind="$attrs" :value="value">
+    <el-checkbox-group v-bind="$attrs" :model-value="modelValue">
         <template v-for="item in items">
             <slot v-bind="{ item, toKey }">
                 <component
@@ -16,7 +16,8 @@
 </template>
 
 <script>
-import { dictKey, getDict } from '@/filter/dict';
+import { computed, watch } from 'vue';
+import { dictKey, getDict } from '@/basal/dict';
 
 export default {
     name: 'FlCheckbox',
@@ -28,29 +29,26 @@ export default {
         numeric: Boolean,
         buttonGroup: Boolean,
         // Original props
-        value: Array,
+        modelValue: Array,
         border: Boolean,
     },
-    computed: {
-        items() {
-            const items = this.data || getDict(this.dictKey);
-            const exclude = this.exclude ? [].concat(this.exclude) : false;
+    setup(props, { emit }) {
+        const data = props.data ?? getDict(props.dictKey);
+        const items = computed(() => {
+            const exclude = props.exclude ? [].concat(props.exclude) : false;
+            return !exclude ? data : data.filter(item => !exclude.some(val => val == item.value));
+        });
 
-            return !exclude ? items : items.filter(item => !exclude.some(val => val == item.value));
-        },
-    },
-    methods: {
-        toKey: dictKey,
-        resetValue() {
-            this.$emit('input', []);
-        },
-    },
-    watch: {
-        items(list) {
-            if (this.value.some(value => !list.some(item => item.value == value))) {
-                this.resetValue();
+        watch(items, list => {
+            if (props.modelValue?.some(value => !list.some(item => item.value == value))) {
+                emit('update:modelValue', []);
             }
-        },
+        });
+
+        return {
+            items,
+            toKey: dictKey,
+        };
     },
 };
 </script>

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { reactive } from 'vue';
 
 let dictData = null;
 const _isArray = Array.isArray;
@@ -13,7 +13,7 @@ function isPlainObject(val) {
  */
 export default function Dict(obj) {
     if (!dictData && isPlainObject(obj)) {
-        dictData = Vue.observable(obj);
+        dictData = reactive(obj);
     }
 
     return dictData;
@@ -134,7 +134,7 @@ export function setDict(key, dict) {
         }
 
         if (!data[k]) {
-            data = data[k] = Vue.observable({});
+            data = data[k] = reactive({});
             continue;
         }
 

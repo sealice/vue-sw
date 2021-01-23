@@ -30,7 +30,7 @@ module.exports = {
 
   lintOnSave: true,
   productionSourceMap: false,
-  transpileDependencies: ['element-ui'],
+  transpileDependencies: [],
 
   configureWebpack: {
     plugins: [
@@ -63,7 +63,7 @@ module.exports = {
           common: { name: 'common' },
           elementUI: {
             name: 'element-ui',
-            test: /[\\/]node_modules[\\/]element-ui/,
+            test: /[\\/]node_modules[\\/]element-plus/,
             priority: -5,
             chunks: 'initial',
           },

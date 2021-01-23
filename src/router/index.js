@@ -1,5 +1,4 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router';
 import routes from './routes';
 
 function disintegrationRoutes(routes, parentPath = '', auth = false) {
@@ -40,7 +39,9 @@ function disintegrationRoutes(routes, parentPath = '', auth = false) {
     return _routes;
 }
 
-Vue.use(VueRouter);
-export default new VueRouter({
+const router = createRouter({
+    history: createWebHashHistory(),
     routes: disintegrationRoutes(routes),
 });
+
+export default router;

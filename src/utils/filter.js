@@ -1,5 +1,3 @@
-export { toDictLabel } from './dict';
-
 // 格式化日期
 export const dateFormat = function(date, format) {
     if (typeof date === 'string') {

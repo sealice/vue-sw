@@ -1,7 +1,7 @@
 import axios from 'axios';
 import buildURL from 'axios/lib/helpers/buildURL';
 import { merge, deepMerge, isString, isUndefined } from 'axios/lib/utils';
-import { Message } from 'element-ui';
+import { ElMessage } from 'element-plus';
 import bus from './bus';
 
 function isPlainObject(val) {
@@ -11,6 +11,15 @@ function isPlainObject(val) {
 let acitveAxios = 0;
 let loadingFlag;
 let timer;
+
+const closeLoading = () => {
+    acitveAxios--;
+    if (acitveAxios <= 0) {
+        timer = timer && clearTimeout(timer);
+        loadingFlag = false;
+        bus.emit('loading:hide');
+    }
+};
 
 const setLoading = loadingText => {
     if (!loadingFlag && acitveAxios > 0) {
@@ -39,15 +48,6 @@ const showLoading = loading => {
     } else {
         // 400ms内请求还有没有响应则显示loading
         timer = setTimeout(setLoading, 400);
-    }
-};
-
-const closeLoading = () => {
-    acitveAxios--;
-    if (acitveAxios <= 0) {
-        timer = timer && clearTimeout(timer);
-        loadingFlag = false;
-        bus.emit('loading:hide');
     }
 };
 
@@ -89,7 +89,7 @@ const responseInterceptors = [
             }
 
             if (cfg.errMsg || isUndefined(cfg.errMsg)) {
-                Message.error(cfg.errMsg || data.msg || '系统繁忙！');
+                ElMessage.error(cfg.errMsg || data.msg || '系统繁忙！');
             }
 
             return Promise.reject(res);
@@ -108,7 +108,7 @@ const responseInterceptors = [
             //     // do something
             //     break;
             default:
-                Message.error(statusText[req.status] || req.statusText || err.message);
+                ElMessage.error(statusText[req.status] || req.statusText || err.message);
         }
 
         return Promise.reject(err);

@@ -1,25 +1,14 @@
-import Vue from 'vue';
+import mitt from 'mitt';
 
-const bus = new Vue();
+const bus = mitt();
 
-export default Object.freeze({
-    install(Vue) {
-        Vue.prototype.$bus = this;
-    },
-    on(event, callback) {
-        bus.$on(event, callback);
-        return this;
-    },
-    once(event, callback) {
-        bus.$once(event, callback);
-        return this;
-    },
-    off(event, callback) {
-        bus.$off(event, callback);
-        return this;
-    },
-    emit(event, ...args) {
-        bus.$emit(event, ...args);
-        return this;
-    },
-});
+bus.once = (type, handler) => {
+    const wrappedHandler = evt => {
+        handler(evt);
+        bus.off(type, wrappedHandler);
+    };
+    bus.on(type, wrappedHandler);
+    return wrappedHandler;
+};
+
+export default bus;

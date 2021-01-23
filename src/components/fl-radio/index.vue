@@ -1,5 +1,5 @@
 <template>
-    <el-radio-group v-on="$listeners" v-bind="$attrs" :value="value">
+    <el-radio-group v-bind="$attrs" :model-value="modelValue">
         <template v-for="item in items">
             <slot v-bind="{ item, toKey }">
                 <component
@@ -16,7 +16,8 @@
 </template>
 
 <script>
-import { dictKey, getDict } from '@/filter/dict';
+import { computed, watch } from 'vue';
+import { dictKey, getDict } from '@/basal/dict';
 
 export default {
     name: 'FlRadio',
@@ -28,29 +29,26 @@ export default {
         numeric: Boolean,
         buttonGroup: Boolean,
         // Original props
-        value: [String, Number],
+        modelValue: [String, Number],
         border: Boolean,
     },
-    computed: {
-        items() {
-            const items = this.data || getDict(this.dictKey);
-            const exclude = this.exclude ? [].concat(this.exclude) : false;
+    setup(props, { emit }) {
+        const data = props.data ?? getDict(props.dictKey);
+        const items = computed(() => {
+            const exclude = props.exclude ? [].concat(props.exclude) : false;
+            return !exclude ? data : data.filter(item => !exclude.some(val => val == item.value));
+        });
 
-            return !exclude ? items : items.filter(item => !exclude.some(val => val == item.value));
-        },
-    },
-    methods: {
-        toKey: dictKey,
-        resetValue() {
-            this.$emit('input', '');
-        },
-    },
-    watch: {
-        items(list) {
-            if (this.value && !list.some(item => item.value == this.value)) {
-                this.resetValue();
+        watch(items, list => {
+            if (props.modelValue && !list.some(item => item.value == props.modelValue)) {
+                emit('update:modelValue', '');
             }
-        },
+        });
+
+        return {
+            items,
+            toKey: dictKey,
+        };
     },
 };
 </script>
