@@ -15,7 +15,7 @@ export default {
             pageLayout: 'total, sizes, prev, pager, next, jumper',
             queryForm: {},
             tableData: [],
-            tableLoading: true,
+            tableLoading: false,
             tableOptions: {
                 headerCellStyle: { background: '#fafafa' },
                 border: true,
@@ -34,6 +34,10 @@ export default {
             return Promise.reject(console.warn(this.$route.path, '请添加表格数据删除方法`delData`'));
         },
         getTableData() {
+            if (this.tableLoading) {
+                return;
+            }
+
             this.tableLoading = true;
 
             return this.getData(this._queryForm, {
@@ -72,7 +76,7 @@ export default {
             this.$nextTick(this.getTableData);
         },
         onSizeChange(pageSize) {
-            this.onPageChange(1, pageSize);
+            this.onPageChange(this.page, pageSize);
         },
         onRefresh() {
             this.onPageChange(this.page);

@@ -83,7 +83,7 @@
 1. `emulateJSON` boolean 是否表单提交，默认 false；<br>
 2. `loading` boolean / string 是否立即显示全屏 loading，为字符串时会显示加载文字，默认 false；<br>
 3. `errMsg` boolean / string 是否提示错误消息，默认提示接口返回 msg 字段，如果 msg 字段为空则提示“系统繁忙！”<br>
-4. `noIntercept` boolean 是否禁用响应拦截处理，默认 false；<br> _注意：响应拦截处理默认返回请求响应实体 body 数据，当接口返回错误或 noIntercept: true 时返回完整的 response 数据_
+4. `noIntercept` boolean 是否禁用响应拦截处理，默认 false；<br> _注意：响应拦截处理默认返回请求响应实体 body 数据，当接口返回错误或 noIntercept: true 时，为了方便处理错误而返回完整的 response 数据_
 
 > 重要：拦截器需要根据项目实际情况做些调整，比如：请求返回的成功字段不一样（默认是`code`等于 0）；有需要在`headers`请求头添加参数等等
 

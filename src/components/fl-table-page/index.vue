@@ -38,8 +38,8 @@ export default {
     mixins: [TablePageMixins],
     inheritAttrs: false,
     props: {
-        getDataMethod: Function,
-        delDataMethod: Function,
+        getDataFunc: Function,
+        delDataFunc: Function,
         defQueryForm: Object,
         showPagination: {
             type: Boolean,
@@ -62,12 +62,12 @@ export default {
         };
     },
     created() {
-        if (this.getDataMethod) {
-            this.getData = this.getDataMethod;
+        if (this.getDataFunc) {
+            this.getData = this.getDataFunc;
         }
 
-        if (this.delDataMethod) {
-            this.delData = this.delDataMethod;
+        if (this.delDataFunc) {
+            this.delData = this.delDataFunc;
         }
     },
 };
