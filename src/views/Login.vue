@@ -30,7 +30,7 @@ export default {
         const submit = () => {
             store.dispatch(LOGIN, form).then(isLogin => {
                 if (isLogin) {
-                    router.replace(route.query.redirect || '/');
+                    router.replace(route.redirectedFrom?.fullPath || '/');
                 }
             });
         };

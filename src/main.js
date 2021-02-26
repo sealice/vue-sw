@@ -17,24 +17,17 @@ import Components from './components';
 app.use(Components);
 
 // 路由拦截（前置守卫）
-router.beforeEach((to, from, next) => {
-    store.dispatch(LOGGED_GET).then(isLogin => {
-        if (to.matched.some(record => record.meta.requireAuth)) {
-            isLogin
-                ? next()
-                : next({
-                      name: 'login',
-                      query: { redirect: to.fullPath },
-                  });
-        } else {
-            isLogin && to.name == 'login'
-                ? next({
-                      path: to.query.redirect || '/',
-                      replace: true,
-                  })
-                : next();
-        }
-    });
+const loginPath = '/login';
+router.beforeEach(async (to, from) => {
+    const isLogin = await store.dispatch(LOGGED_GET);
+
+    if (to.matched.some(record => record.meta.requireAuth)) {
+        return isLogin || { path: loginPath };
+    }
+
+    if (isLogin && to.path == loginPath) {
+        return false;
+    }
 });
 
 app.mount('#app');

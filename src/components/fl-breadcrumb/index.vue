@@ -9,32 +9,27 @@
 <script>
 import { computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import pathToRegexp from 'path-to-regexp';
 
 export default {
     name: 'FlBreadcrumb',
     setup() {
         const router = useRouter();
         const route = useRoute();
+        const routerResolve = router.resolve;
+
         const navs = computed(() => {
-            const navs = [];
-            const paths = route.path.split('/');
-            const routes = router.options.routes;
-            const len = routes.length;
-            const size = paths.length;
+            const root = '/';
+            const navs = [{ path: root, title: routerResolve(root).meta?.title }];
 
-            for (let i = 0, r = 1; i < len; i++) {
-                const path = paths.slice(0, r).join('/') || '/';
-                if (pathToRegexp(routes[i].path).test(path)) {
+            if (route.path != root) {
+                const matched = route.path.split('/');
+                let path = matched.shift();
+                while (matched.length) {
+                    path += '/' + matched.shift();
                     navs.push({
-                        path: path,
-                        title: routes[i].meta?.title,
+                        path,
+                        title: routerResolve(path).meta?.title,
                     });
-
-                    r += 1;
-                    if (r > size) {
-                        break;
-                    }
                 }
             }
 
