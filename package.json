@@ -13,15 +13,12 @@
     "core-js": "^3.6.5",
     "element-ui": "^2.13.2",
     "lodash": "^4.17.19",
-    "path-to-regexp": "^1.8.0",
     "register-service-worker": "^1.7.1",
     "vue": "^2.6.11",
     "vue-router": "^3.4.1",
     "vuex": "^3.5.1"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-export-default-from": "^7.10.4",
-    "@babel/plugin-syntax-export-default-from": "^7.10.4",
     "@fullhuman/postcss-purgecss": "^2.1.0",
     "@fullhuman/vue-cli-plugin-purgecss": "~2.2.0",
     "@vue/cli-plugin-babel": "~4.4.6",

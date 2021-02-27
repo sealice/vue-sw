@@ -17,8 +17,6 @@ module.exports = {
         styleLibraryName: '../lib/theme-chalk',
       },
     ],
-    '@babel/plugin-proposal-export-default-from',
-    '@babel/plugin-syntax-export-default-from',
     '@vue/babel-plugin-transform-vue-jsx',
     'lodash',
   ],

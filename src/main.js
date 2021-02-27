@@ -22,22 +22,18 @@ import Components from './components';
 Vue.use(Components);
 
 // 路由拦截（前置守卫）
+const loginPath = '/login';
 router.beforeEach((to, from, next) => {
     store.dispatch(LOGGED_GET).then(isLogin => {
         if (to.matched.some(record => record.meta.requireAuth)) {
-            isLogin
-                ? next()
-                : next({
-                      name: 'login',
-                      query: { redirect: to.fullPath },
-                  });
+            next(
+                isLogin || {
+                    path: loginPath,
+                    query: { redirect: to.fullPath },
+                }
+            );
         } else {
-            isLogin && to.name == 'login'
-                ? next({
-                      path: to.query.redirect || '/',
-                      replace: true,
-                  })
-                : next();
+            next(!(isLogin && to.path == loginPath));
         }
     });
 });

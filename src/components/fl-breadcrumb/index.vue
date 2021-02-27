@@ -7,28 +7,23 @@
 </template>
 
 <script>
-import pathToRegexp from 'path-to-regexp';
-
 export default {
     name: 'FlBreadcrumb',
     computed: {
         navs() {
-            const navs = [];
-            const paths = this.$route.path.split('/');
-            const routes = this.$router.options.routes;
+            const root = '/';
+            const getRoute = path => this.$router.resolve(path).route;
+            const navs = [{ path: root, title: getRoute(root).meta.title }];
 
-            for (let i = 0, r = 1, len = routes.length, size = paths.length; i < len; i++) {
-                const path = paths.slice(0, r).join('/') || '/';
-                if (pathToRegexp(routes[i].path).test(path)) {
+            if (this.$route.path != root) {
+                const matched = this.$route.path.split('/');
+                let path = matched.shift();
+                while (matched.length) {
+                    path += '/' + matched.shift();
                     navs.push({
-                        path: path,
-                        title: routes[i].meta.title,
+                        path,
+                        title: getRoute(path).meta.title,
                     });
-
-                    r += 1;
-                    if (r > size) {
-                        break;
-                    }
                 }
             }
 
