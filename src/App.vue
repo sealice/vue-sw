@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import './style/index.less';
 import { computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRoute, useRouter } from 'vue-router';
@@ -76,6 +75,8 @@ export default {
 </script>
 
 <style lang="less">
+@import '~@/style/index.less';
+
 #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;

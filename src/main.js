@@ -26,7 +26,7 @@ router.beforeEach(async (to, from) => {
     }
 
     if (isLogin && to.path == loginPath) {
-        return false;
+        return from;
     }
 });
 
