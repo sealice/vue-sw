@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import './style/index.less';
 import { LOGOUT } from '@/store/types';
 
 export default {
@@ -69,6 +68,8 @@ export default {
 </script>
 
 <style lang="less">
+@import '~@/style/index.less';
+
 #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;

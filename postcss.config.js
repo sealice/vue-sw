@@ -5,12 +5,28 @@ module.exports = {
     require('autoprefixer'),
     IN_PRODUCTION &&
       require('@fullhuman/postcss-purgecss')({
-        content: [`./public/**/*.html`, `./src/**/*.vue`, `./src/style/*.less`],
+        content: [`./public/**/*.html`, `./src/**/*.vue`],
         defaultExtractor(content) {
-          const contentWithoutStyleBlocks = content.replace(/<style[^]+?<\/style>/gi, '');
-          return contentWithoutStyleBlocks.match(/[A-Za-z0-9-_/:]*[A-Za-z0-9-_/]+/g) || [];
+          const selectors = [];
+          content.replace(/<(template|html)[^]+<\/\1>|<(script)[^]+<\/\2>/g, (a, t, s) => {
+            if (t) {
+              a.replace(/(?<=(id|class(name)?|icon)="?)([\w\s\-?:'{}]+)|(?<=<)[\w-]+/g, b => {
+                const match = b.match(/[\w-]+/g);
+                if (match) {
+                  match.forEach(item => {
+                    selectors.includes(item) || selectors.push(item);
+                  });
+                }
+              });
+            } else if (s) {
+              const match = a.match(/[\w:-]*[\w-]+/g);
+              match && selectors.push(...match);
+            }
+          });
+
+          return selectors;
         },
-        whitelist: ['circular'],
+        whitelist: ['class', 'circular'],
         whitelistPatterns: [
           /-(leave|enter|appear)(|-(to|from|active))$/,
           /^(?!(|.*?:)cursor-move).+-move$/,
@@ -19,7 +35,8 @@ module.exports = {
           // element-ui
           /el-(form|input|select|radio|checkbox|switch|date|button|tag|link)/,
           /el-(alert|loading|message|notification|dialog|tooltip|popover)/,
-          /el-(table|pagination|breadcrumb|dropdown|card|menu|icon)/,
+          /el-(table|pagination|breadcrumb|dropdown|card|menu)/,
+          /el-icon-(plus|minus|arrow|caret|circle|time|date|star|search|back|close|check|success|info|warning|error|question)/,
         ],
       }),
   ],

@@ -33,7 +33,7 @@ router.beforeEach((to, from, next) => {
                 }
             );
         } else {
-            next(!(isLogin && to.path == loginPath));
+            next(!isLogin || to.path != loginPath || from);
         }
     });
 });
