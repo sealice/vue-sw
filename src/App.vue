@@ -1,16 +1,14 @@
 <template>
-    <div id="app" :class="{ layout }">
-        <!-- layout -->
-        <template v-if="layout">
-            <div id="nav">
-                <router-link to="/">Home</router-link> | <router-link to="/about">About</router-link> |
-                <router-link to="/about/bar">About Bar</router-link>
-            </div>
-        </template>
-
-        <div class="page">
-            <router-view />
+    <!-- layout -->
+    <template v-if="layout">
+        <div id="nav">
+            <router-link to="/">Home</router-link> | <router-link to="/about">About</router-link> |
+            <router-link to="/about/bar">About Bar</router-link>
         </div>
+    </template>
+
+    <div class="page">
+        <router-view />
     </div>
 </template>
 
@@ -28,7 +26,11 @@ export default {
         const store = useStore();
         const route = useRoute();
         const router = useRouter();
-        const layout = computed(() => route.meta.layout);
+        const layout = computed(() => {
+            const layout = route.meta.layout;
+            window.app.className = layout ? 'layout' : '';
+            return layout;
+        });
 
         // 显示全屏loading
         bus.on('loading:show', ({ text } = {}) => {

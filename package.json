@@ -57,6 +57,7 @@
       "no-console": "off",
       "no-unused-vars": "warn",
       "vue/require-v-for-key": "warn",
+      "vue/no-multiple-template-root": "off",
       "vue/experimental-script-setup-vars": "off"
     }
   },
