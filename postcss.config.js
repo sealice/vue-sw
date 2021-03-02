@@ -5,7 +5,7 @@ module.exports = {
     require('autoprefixer'),
     IN_PRODUCTION &&
       require('@fullhuman/postcss-purgecss')({
-        content: [`./public/**/*.html`, `./src/**/*.vue`],
+        content: ['./public/**/*.html', './src/**/*.vue'],
         defaultExtractor(content) {
           const selectors = [];
           content.replace(/<(template|html)[^]+<\/\1>|<(script)[^]+<\/\2>/g, (a, t, s) => {
@@ -19,7 +19,7 @@ module.exports = {
                 }
               });
             } else if (s) {
-              const match = a.match(/[\w:-]*[\w-]+/g);
+              const match = a.match(/[\w-/:]+(?<!:)/g);
               match && selectors.push(...match);
             }
           });

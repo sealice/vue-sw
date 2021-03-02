@@ -106,6 +106,7 @@ function onFulfilledResponse(res) {
 
     if (!cfg.noIntercept) {
         if (data.code == 0) {
+            data.headers = res.headers;
             return data;
         }
 
@@ -131,7 +132,7 @@ function onRejectedResponse(err) {
         //     // do something
         //     break;
         default:
-            ElMessage.error(statusText[req.status] || req.statusText || err.message);
+            Message.error(statusText[req.status] || req.statusText || err.message);
     }
 
     return Promise.reject(err);
@@ -160,6 +161,11 @@ export function getParams(url) {
 /** 默认的Post请求 */
 export function post(url) {
     return (data, config) => service.post(url, data, config);
+}
+
+/** 请求包装处理（忽略异常） */
+export function requestProcess(request, success, complete) {
+    return request.then(success, () => {}).finally(complete);
 }
 
 export default service;
