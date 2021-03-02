@@ -1,5 +1,5 @@
 import { LOGIN, LOGOUT, LOGGED_GET, USER_SET_INFO } from '../types';
-import { login, getUser } from '@/service';
+import { requestProcess, login, getUser } from '@/service';
 
 let loggedInfoRequested = false;
 const _assign = Object.assign;
@@ -23,14 +23,15 @@ export default {
     actions: {
         [LOGIN]({ getters, commit }, data) {
             return new Promise(resolve => {
-                login(data)
-                    .then(res => {
+                requestProcess(
+                    login(data),
+                    res => {
                         commit(USER_SET_INFO, res.data);
-                    })
-                    .catch(() => {})
-                    .finally(() => {
+                    },
+                    () => {
                         resolve(getters.isLogin);
-                    });
+                    }
+                );
             });
         },
         [LOGOUT]({ getters, commit }) {
@@ -47,14 +48,15 @@ export default {
 
                 loggedInfoRequested = true;
 
-                getUser({ errMsg: false })
-                    .then(res => {
+                requestProcess(
+                    getUser({ errMsg: false }),
+                    res => {
                         commit(USER_SET_INFO, res.data);
-                    })
-                    .catch(() => {})
-                    .finally(() => {
+                    },
+                    () => {
                         resolve(getters.isLogin);
-                    });
+                    }
+                );
             });
         },
     },
