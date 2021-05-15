@@ -11,7 +11,7 @@ module.exports = {
   devServer: {
     proxy: null,
 
-    after: function(app) {
+    before: function(app) {
       // 使用 mock api
       app.use(
         middleware({
