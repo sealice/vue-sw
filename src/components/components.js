@@ -1,4 +1,5 @@
 export { default as FlBreadcrumb } from './fl-breadcrumb';
+export { default as FlButton } from './fl-button';
 export { default as FlCheckbox } from './fl-checkbox';
 export { default as FlRadio } from './fl-radio';
 export { default as FlSelect } from './fl-select';

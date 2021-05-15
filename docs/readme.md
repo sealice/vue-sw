@@ -135,7 +135,7 @@ getDict('enable');
 
 为了提升开发的效率，提供了几个在 Element-UI 上进一步封装的组件。<br>
 
-> 表单组件 FlSelect、FlCheckbox、FlRadio、FlDatePicker、FlDaterangePicker 帮助快速的编写表单及简化表单操作处理
+> 表单组件 FlSelect、FlCheckbox、FlRadio、FlDatePicker、FlDaterangePicker, FlButton 帮助快速的编写表单及简化表单操作处理，这些组件均保留原组件的所有属性及事件
 
 **FlSelect 下拉选择器**
 | 参数 | 说明 | 类型 | 默认值 |
@@ -201,3 +201,18 @@ getDict('enable');
 | width | 设置宽度，接收数字或字符串，如果为数字单位是`px` | number / string | - |
 
 > 其他属性和事件请查看 Elememt-UI 的 [ElDatePicker](https://element.eleme.cn/#/zh-CN/component/date-picker#attributes) 组件
+
+**FlButton 按钮**
+
+因在操作提交数据的时候为了避免多次点击都需要添加 `loading`或 `disabled` 属性，但是每个提交操作都要一遍遍的添加 `loading`或 `disabled` 属性感觉有点繁琐，特别是一个页面有多个按钮操作的时候；所以在原组件的基础上添加了 `submit` 事件来避免多次点击问题。
+
+| 参数              | 说明                                                   | 类型    | 默认值 |
+| ----------------- | ------------------------------------------------------ | ------- | ------ |
+| loading-at-submit | 是否在触发 `submit` 事件时显示 loading，默认只禁用按钮 | boolean | -      |
+
+Events
+| 事件名称 | 说明 | 回调参数 |
+| -------- | ---- | ---------- |
+| submit | 点击按钮时触发的提交事件，需执行回调 cb 方法来恢复按钮状态，与 `click` 事件互斥 | (cb: Function, event: Event) |
+
+> 其他属性和事件请查看 Elememt-UI 的 [ElButton](https://element.eleme.cn/#/zh-CN/component/button#attributes) 组件
