@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const CompressionWebpackPlugin = require('compression-webpack-plugin');
 const LodashWebpackPlugin = require('lodash-webpack-plugin');
 const { GenerateSW } = require('workbox-webpack-plugin');
 const middleware = require('hm-middleware');
@@ -95,6 +96,15 @@ module.exports = {
             },
           })
         )
+      );
+
+      // gzip压缩文件
+      config.plugin('compressionPlugin').use(
+        new CompressionWebpackPlugin({
+          test: /\.(js|css|json|ico|svg)(\?.*)?$/i,
+          threshold: 10240, // 对超过10kb的文件压缩
+          deleteOriginalAssets: false,
+        })
       );
     });
   },
