@@ -13,6 +13,8 @@
 
 [查看文档](./docs/readme.md)
 
+[Vue 3.0 版本](https://github.com/sealice/vue-sw/tree/vue3.0)
+
 ## Project setup
 
 ```
