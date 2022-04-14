@@ -13,7 +13,7 @@ require('echarts/lib/chart/radar'); // 雷达图
 // require('echarts/lib/chart/scatter'); // 散点图
 // require('echarts/lib/chart/effectScatter'); // 涟漪散点图
 // require('echarts/lib/chart/lines'); // 线图
-// require('echarts/lib/chart/map'); // 地图
+require('echarts/lib/chart/map'); // 地图
 // require('echarts/lib/chart/heatmap'); // 热力图
 // require('echarts/lib/chart/funnel'); // 漏斗图
 // require('echarts/lib/chart/tree'); // 树图
@@ -32,7 +32,7 @@ require('echarts/lib/chart/radar'); // 雷达图
 require('echarts/lib/component/grid'); // 直角坐标系
 require('echarts/lib/component/polar'); // 极坐标系
 // require('echarts/lib/component/singleAxis'); // 单轴
-// require('echarts/lib/component/geo'); // 地理坐标系
+require('echarts/lib/component/geo'); // 地理坐标系
 // require('echarts/lib/component/parallel');
 // require('echarts/lib/component/calendar'); // 日历
 
@@ -47,7 +47,7 @@ require('echarts/lib/component/markPoint'); // 标注
 require('echarts/lib/component/markLine'); // 标线
 require('echarts/lib/component/markArea'); // 标域
 require('echarts/lib/component/axisPointer');
-// require('echarts/lib/component/visualMap'); // 视觉映射
+require('echarts/lib/component/visualMap'); // 视觉映射
 // require('echarts/lib/component/visualMapContinuous');
 // require('echarts/lib/component/visualMapPiecewise');
 // require('echarts/lib/component/brush'); // 刷选
