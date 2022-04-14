@@ -1,4 +1,4 @@
-const IN_PRODUCTION = process.env.NODE_ENV === 'production';
+const IN_PRODUCTION = process.env.NODE_ENV === 'production' && false;
 
 module.exports = {
   plugins: [
@@ -33,10 +33,11 @@ module.exports = {
           /^router-link(|-exact)-active$/,
           /data-v-.*/,
           // element-ui
+          /(link|dark|arrow)/,
           /el-(form|input|select|radio|checkbox|switch|date|button|tag|link)/,
-          /el-(alert|loading|message|notification|dialog|tooltip|popover)/,
-          /el-(table|pagination|breadcrumb|dropdown|card|menu)/,
-          /el-icon-(plus|minus|arrow|caret|circle|time|date|star|search|back|close|check|success|info|warning|error|question)/,
+          /el-(alert|loading|message|notification|dialog|tooltip|popover|scrollbar)/,
+          /el-(table|pagination|breadcrumb|dropdown|card|menu|submenu)/,
+          /el-icon-(menu|plus|minus|arrow|caret|circle|time|date|star|search|back|close|check|success|info|warning|error|question)/,
         ],
       }),
   ],

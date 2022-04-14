@@ -9,15 +9,16 @@
     "modern": "vue-cli-service build --modern"
   },
   "dependencies": {
-    "axios": "^0.21.1",
-    "core-js": "^3.9.0",
+    "axios": "^0.21.4",
+    "core-js": "^3.21.1",
     "echarts": "^4.9.0",
-    "element-ui": "^2.15.1",
+    "element-ui": "^2.15.8",
+    "js-cookie": "^3.0.1",
     "lodash": "^4.17.21",
     "register-service-worker": "^1.7.2",
     "resize-detector": "^0.3.0",
-    "vue": "^2.6.12",
-    "vue-router": "^3.5.1",
+    "vue": "^2.6.14",
+    "vue-router": "^3.5.3",
     "vuex": "^3.6.2"
   },
   "devDependencies": {
@@ -28,17 +29,21 @@
     "@vue/cli-plugin-router": "~4.4.6",
     "@vue/cli-plugin-vuex": "~4.4.6",
     "@vue/cli-service": "~4.4.6",
+    "add-asset-html-cdn-webpack-plugin": "^1.0.0",
     "babel-eslint": "^10.1.0",
     "babel-plugin-component": "^1.1.1",
     "babel-plugin-lodash": "^3.3.4",
     "compression-webpack-plugin": "^6.1.1",
     "eslint": "^6.8.0",
     "eslint-plugin-vue": "^6.2.2",
+    "hard-source-webpack-plugin": "^0.13.1",
     "hm-middleware": "^1.1.6",
     "less": "^3.13.1",
     "less-loader": "^5.0.0",
     "lodash-webpack-plugin": "^0.11.6",
-    "vue-template-compiler": "^2.6.12",
+    "style-resources-loader": "^1.4.1",
+    "vue-cli-plugin-style-resources-loader": "~0.1.5",
+    "vue-template-compiler": "^2.6.14",
     "workbox-webpack-plugin": "^4.3.1"
   },
   "eslintConfig": {
@@ -57,7 +62,8 @@
       "no-console": "off",
       "no-unused-vars": "warn",
       "vue/require-v-for-key": "warn"
-    }
+    },
+    "globals": {}
   },
   "prettier": {
     "printWidth": 120,

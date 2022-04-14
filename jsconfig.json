@@ -12,6 +12,9 @@
     "paths": {
       "@/*": [
         "src/*"
+      ],
+      "@common/*": [
+        "src/views/@common/*"
       ]
     }
   },
