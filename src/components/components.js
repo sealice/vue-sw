@@ -1,4 +1,3 @@
-export { default as FlBreadcrumb } from './fl-breadcrumb';
 export { default as FlButton } from './fl-button';
 export { default as FlChart } from './fl-chart';
 export { default as FlCheckbox } from './fl-checkbox';

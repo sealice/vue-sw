@@ -28,7 +28,7 @@ Vue.use(bus);
 const loginPath = '/login';
 router.beforeEach((to, from, next) => {
     store.dispatch(LOGGED_GET).then(isLogin => {
-        if (to.matched.some(record => record.meta.requireAuth)) {
+        if (to.matched.some(record => record.meta.auth)) {
             next(
                 isLogin || {
                     path: loginPath,
@@ -44,6 +44,22 @@ router.beforeEach((to, from, next) => {
 const originalPush = router.push;
 router.push = function push(location) {
     return originalPush.call(this, location).catch(() => {});
+};
+
+// 页面使用keep-alive组件缓存的，需始终使用 $dewatch 观察 $route 等页面共享参数的变化
+Vue.prototype.$dewatch = function(expOrFn, callback, option) {
+    let unwatch;
+    const fn = () => {
+        if (!unwatch) {
+            unwatch = this.$watch(expOrFn, callback, option);
+        }
+    };
+
+    fn();
+    this.$on('hook:activated', fn);
+    this.$on('hook:deactivated', () => {
+        unwatch = void unwatch();
+    });
 };
 
 new Vue({

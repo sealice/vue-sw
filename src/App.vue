@@ -1,16 +1,6 @@
 <template>
-    <div id="app" :class="{ layout }">
-        <!-- layout -->
-        <template v-if="layout">
-            <div id="nav">
-                <router-link to="/">Home</router-link> | <router-link to="/about">About</router-link> |
-                <router-link to="/about/bar">About Bar</router-link>
-            </div>
-        </template>
-
-        <div class="page">
-            <router-view />
-        </div>
+    <div id="app">
+        <router-view />
     </div>
 </template>
 
@@ -18,14 +8,6 @@
 import { LOGOUT } from '@/store/types';
 
 export default {
-    computed: {
-        layout() {
-            return this.$route.meta.layout;
-        },
-    },
-    data() {
-        return {};
-    },
     created() {
         let loadingInstance;
 
@@ -69,25 +51,4 @@ export default {
 
 <style lang="less">
 @import '~@/style/index.less';
-
-#app {
-    font-family: 'Avenir', Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-}
-
-#nav {
-    padding: 30px;
-}
-
-#nav a {
-    font-weight: bold;
-    color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-    color: #42b983;
-}
 </style>
