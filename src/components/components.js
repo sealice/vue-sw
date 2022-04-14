@@ -4,6 +4,8 @@ export { default as FlChart } from './fl-chart';
 export { default as FlCheckbox } from './fl-checkbox';
 export { default as FlDatePicker } from './fl-date-picker';
 export { default as FlDaterangePicker } from './fl-daterange-picker';
+export { default as FlInput } from './fl-input';
 export { default as FlRadio } from './fl-radio';
 export { default as FlSelect } from './fl-select';
 export { default as FlTablePage } from './fl-table-page';
+export { default as FlUpload } from './fl-upload';
