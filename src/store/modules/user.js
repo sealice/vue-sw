@@ -1,5 +1,5 @@
 import { LOGIN, LOGOUT, LOGGED_GET, USER_SET_INFO } from '../types';
-import { requestProcess, login, getUser } from '@/service';
+import { requestWrapper, login, getUser } from '@/service';
 
 let loggedInfoRequested = false;
 const _assign = Object.assign;
@@ -23,7 +23,7 @@ export default {
     actions: {
         [LOGIN]({ getters, commit }, data) {
             return new Promise(resolve => {
-                requestProcess(
+                requestWrapper(
                     login(data),
                     res => {
                         commit(USER_SET_INFO, res.data);
@@ -48,7 +48,7 @@ export default {
 
                 loggedInfoRequested = true;
 
-                requestProcess(
+                requestWrapper(
                     getUser({ errMsg: false }),
                     res => {
                         commit(USER_SET_INFO, res.data);

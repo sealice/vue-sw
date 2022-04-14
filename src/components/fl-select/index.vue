@@ -6,9 +6,11 @@
         :value="value"
         :multiple="multiple"
         :value-key="valueKey"
+        :loading="loading"
+        @[focus]="updateDictData"
     >
-        <template v-for="item in items">
-            <slot v-bind="{ item, toKey }">
+        <template v-for="(item, index) in items">
+            <slot v-bind="{ item, toKey, index }">
                 <el-option
                     :key="item.value"
                     :value="isObject ? item : toKey(item[valueKey], numeric)"
@@ -21,26 +23,39 @@
 </template>
 
 <script>
-import { dictKey, getDict } from '@/filter/dict';
+import { toKey, getDict } from '@/filter/dict';
 
 export default {
     name: 'FlSelect',
     inheritAttrs: false,
     props: {
         data: Array,
-        width: String,
+        width: [String, Number],
         exclude: [String, Number, Array],
         dictKey: String,
         numeric: Boolean,
         isObject: Boolean,
+        focusUpdate: Boolean,
         // Original props
         value: [String, Number, Array, Object],
         multiple: Boolean,
         valueKey: { type: String, default: 'value' },
     },
+    data() {
+        return {
+            loading: false,
+            dictData: [],
+        };
+    },
     computed: {
+        isFetch() {
+            return !!this.dictData.fetch;
+        },
+        focus() {
+            return this.focusUpdate ? 'focus' : null;
+        },
         items() {
-            const items = [].concat(this.data || getDict(this.dictKey));
+            const items = this.data || this.dictData;
             const exclude = this.exclude ? [].concat(this.exclude) : false;
 
             return !exclude ? items : items.filter(item => !exclude.some(val => val == item[this.valueKey]));
@@ -48,38 +63,49 @@ export default {
         style() {
             const width = this.width;
             if (width) {
-                return { width: !Number(width) ? width : width + 'px' };
+                return { width: isNaN(width) ? width : width + 'px' };
             }
 
-            return {};
+            return null;
         },
     },
     methods: {
-        toKey: dictKey,
+        toKey,
         resetValue() {
             this.$emit('input', this.multiple ? [] : '');
         },
+        updateDictData() {
+            const key = this.dictKey;
+            if (key) {
+                this.dictData = getDict(key);
+            }
+        },
     },
     watch: {
+        dictKey: 'updateDictData',
+        dictData(val) {
+            if (this.isFetch) {
+                this.loading = val.loading;
+            }
+        },
         items(list) {
-            if (this.multiple) {
-                if (
-                    this.value.some(
-                        value =>
-                            !list.some(item => item[this.valueKey] == (this.isObject ? value[this.valueKey] : value))
-                    )
-                ) {
+            const { value, valueKey, isObject, multiple } = this;
+
+            if (multiple) {
+                if (value.some(val => !list.some(item => item[valueKey] == (isObject ? val[valueKey] : val)))) {
                     this.resetValue();
                 }
             } else {
-                if (
-                    this.value &&
-                    !list.some(item => item[this.valueKey] == (this.isObject ? this.value[this.valueKey] : this.value))
-                ) {
+                if (value && !list.some(item => item[valueKey] == (isObject ? value[valueKey] : value))) {
                     this.resetValue();
                 }
             }
         },
+    },
+    created() {
+        if (!this.focusUpdate) {
+            this.updateDictData();
+        }
     },
 };
 </script>

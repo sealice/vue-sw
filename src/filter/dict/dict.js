@@ -35,66 +35,64 @@ export function transformDict(str) {
 }
 
 /**
- * 从接口获取字典数据列表，当mapper或isCache是string类型是会作为key值
- * @param {function} api 获取接口数据方法，需返回Promise
- * @param {object} mapper 映射字段为value、label，默认映射接口返回的id、name字段
- * @param {boolean} isCache 是否缓存接口数据，默认缓存
+ * 从接口获取字典数据列表
+ * @param {object} opts 接口相关参数对象：
+ *                 `api` 获取接口数据方法，需返回Promise；
+ *                 `data` 接口数据请求参数；
+ *                 `config` 接口配置参数；
+ *                 `isCache` 是否缓存接口数据，默认缓存；
+ *                 `callback` 处理接口返回的数据方法，需返回数据格式：[{value, label}]。
  * @param {string} key 接口返回字典数据列表的字段，默认list
  */
-export function fetchDict(api, mapper, isCache, key = 'list') {
-    const data = [];
-    let flag = false; // 请求更新标记
-    const mapperType = typeof mapper;
-    const isCacheType = typeof isCache;
+export function fetchDict(opts, key = 'list') {
+    const dictData = [];
+    const {
+        api,
+        data,
+        config,
+        isCache,
+        callback = res => {
+            if (_isArray(res[key])) {
+                return res[key].map(({ id, name }) => ({ value: id, label: name }));
+            }
+        },
+    } = opts || {};
 
-    if (mapperType == 'boolean') {
-        if (isCacheType == 'string') {
-            key = isCache;
-        }
-        [isCache, mapper] = [mapper];
-    } else if (mapperType == 'string') {
-        [key, mapper] = [mapper];
-    } else if (isCacheType == 'string') {
-        [key, isCache] = [isCache];
+    if (typeof api !== 'function') {
+        console.error(`[Dict]: 参数api必须是一个返回Promise的接口方法`);
     }
 
-    mapper = Object.assign({ value: 'id', label: 'name' }, mapper);
-
-    Object.defineProperties(data, {
-        flag: {
-            get() {
-                return flag;
-            },
+    Object.defineProperties(dictData, {
+        loading: {
+            value: false, // 请求状态
+            writable: true,
         },
-        setFlag: {
-            value: function setFlag(bool) {
-                flag = bool;
-            },
+        flag: {
+            value: false, // 请求更新标记
+            writable: true,
         },
         isCache: {
             get() {
-                return isCache === undefined || isCache;
+                return isCache == null || isCache;
             },
         },
         fetch: {
             value: function fetch() {
-                return api().then(res => {
+                return api(data, config).then(res => {
                     // 处理响应数据
-                    if (!_isArray(res[key])) {
-                        throw new Error(`响应数据中"${key}"应该是一个数组，而不是${typeof res[key]}`);
+                    const list = callback(res);
+
+                    if (!_isArray(list)) {
+                        throw new Error(`[Dict]: 请求接口数据处理应该返回"dictData"格式的数组，而不是${typeof list}`);
                     }
 
-                    return res[key].map(item => ({
-                        value: item[mapper.value],
-                        label: item[mapper.label],
-                        ...item,
-                    }));
+                    return list;
                 });
             },
         },
     });
 
-    return data;
+    return dictData;
 }
 
 /**
@@ -102,14 +100,14 @@ export function fetchDict(api, mapper, isCache, key = 'list') {
  * @param {string} key 字典键值
  * @param {boolean} numeric 是否返回数字，默认返回字符串
  */
-export function dictKey(key, numeric) {
+export function toKey(key, numeric) {
     return !numeric ? String(key) : Number(key);
 }
 
 /**
  * 设置字典数据，支持多层级
  * @param {string} key 字典类型字段
- * @param {object} dict 字典数据
+ * @param {array} dict 字典数据
  */
 export function setDict(key, dict) {
     let data = dictData;
@@ -117,7 +115,7 @@ export function setDict(key, dict) {
     const last = keys.length - 1;
 
     for (let [i, k] of Object.entries(keys)) {
-        const error = new Error(`您正在进行破坏性的设置"dictData"的"${key}->${k}"值`);
+        const error = new Error(`[Dict]: 正在进行破坏性的设置"dictData"的"${key}->${k}"值`);
 
         // 已是最后的key，开始赋值
         if (i == last) {
@@ -125,8 +123,13 @@ export function setDict(key, dict) {
                 if (!_isArray(data[k])) {
                     throw error;
                 }
-                // 原来是数组的先清空再添加元素，避免破坏原数组
-                data[k].splice(0, data[k].length, ...dict);
+
+                if (!dict.fetch) {
+                    // 原来是数组的先清空再添加元素，避免破坏原数组
+                    data[k].splice(0, data[k].length, ...dict);
+                } else {
+                    data[k] = dict;
+                }
             } else {
                 data[k] = dict;
             }
@@ -134,7 +137,8 @@ export function setDict(key, dict) {
         }
 
         if (!data[k]) {
-            data = data[k] = Vue.observable({});
+            Vue.set(data, k, {});
+            data = data[k];
             continue;
         }
 
@@ -171,19 +175,23 @@ export function getDict(key) {
     // 从api获取数据
     if (data.fetch && (!data.length || !data.isCache)) {
         if (!data.flag) {
-            data.setFlag(true);
-            data.fetch().then(
-                value => {
-                    setDict(key, value);
-                    if (!data.isCache) {
-                        setTimeout(() => data.setFlag(false), 500);
+            // data.splice(0, data.length); // 更新前先清除缓存
+            data.flag = true;
+            data.loading = true;
+            setTimeout(() => {
+                data.fetch().then(
+                    value => {
+                        setDict(key, value);
+                        data.loading = false;
+                        if (!data.isCache) {
+                            data.flag = false;
+                        }
+                    },
+                    err => {
+                        console.error(`从接口获取数据设置"dictData"的"${key}"值错误。`, err);
                     }
-                },
-                err => {
-                    console.warn(`从接口获取数据设置"dictData"的"${key}"值错误。`, err);
-                    data.setFlag(false);
-                }
-            );
+                );
+            }, 0);
         }
     }
 

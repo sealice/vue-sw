@@ -1,6 +1,6 @@
 import axios from 'axios';
 import buildURL from 'axios/lib/helpers/buildURL';
-import { merge, isString, isUndefined } from 'axios/lib/utils';
+import { isString, isUndefined, merge } from 'axios/lib/utils';
 import { Message } from 'element-ui';
 import bus from './bus';
 
@@ -13,19 +13,19 @@ const defaults = {
 
 // 响应状态
 const statusText = {
-    '0': '网络错误！',
-    // '400': '错误的请求！',
-    '401': '没有访问权限！',
-    '403': '服务器拒绝访问！',
-    '404': '请求地址不存在！',
-    // '405': '禁用请求中指定的方法！',
-    '408': '请求超时！',
-    // '500': '服务器内部错误！',
-    // '501': '无法识别请求！',
-    '502': '错误网关！',
-    '503': '服务不可用！',
-    '504': '网关超时！',
-    // '505': 'HTTP协议版本不受支持！',
+    0: '网络错误！',
+    // 400: '错误的请求！',
+    401: '没有访问权限！',
+    403: '服务器拒绝访问！',
+    404: '请求地址不存在！',
+    // 405: '禁用请求中指定的方法！',
+    408: '请求超时！',
+    // 500: '服务器内部错误！',
+    // 501: '无法识别请求！',
+    502: '错误网关！',
+    503: '服务不可用！',
+    504: '网关超时！',
+    // 505: 'HTTP协议版本不受支持！',
 };
 
 let acitveAxios = 0;
@@ -66,13 +66,62 @@ function showLoading(loading) {
     if (loading) {
         setLoading(loading);
     } else {
-        // 400ms内请求还有没有响应则显示loading
-        timer = setTimeout(setLoading, 400);
+        // 700ms内请求还有没有响应则显示loading
+        timer = setTimeout(setLoading, 700);
     }
 }
 
 function isPlainObject(val) {
-    return val && val.constructor.name === 'Object';
+    return (val || false) && val.constructor.name === 'Object';
+}
+
+// 配置开发模式的代理环境
+function configureProxyEnv(cfg, mockProxy, Cookies) {
+    const PROXY_ENV = Cookies.get('PROXY_ENV');
+    const env = PROXY_ENV || process.env.VUE_APP_PROXYENV;
+    const { enabled, proxy } = mockProxy || {};
+    const proxyEnv = proxy[env];
+
+    if (!PROXY_ENV) {
+        Cookies.set('PROXY_ENV', env);
+    }
+
+    let target;
+    if (enabled && proxyEnv) {
+        if (isString(proxyEnv)) {
+            target = proxyEnv;
+        } else if (isPlainObject(proxyEnv)) {
+            for (const [key, val] of Object.entries(proxyEnv)) {
+                const reg = new RegExp(`^${key}`);
+                if (reg.test(cfg.url) && val) {
+                    if (isString(val)) {
+                        target = val;
+                    } else if (isPlainObject(val)) {
+                        target = val.target;
+                        if ('rewrite' in val) {
+                            cfg.url = cfg.url.replace(reg, val.rewrite);
+                        }
+                    }
+
+                    break;
+                }
+            }
+        }
+    }
+
+    if (target) {
+        cfg.headers = cfg.headers || {};
+        cfg.headers['X-Mock-Proxy'] = target;
+    }
+
+    if (enabled && !window._isProxyEnv) {
+        window._isProxyEnv = true;
+        console.log(
+            `%c当前代理环境${env}:`,
+            'color:red;',
+            (isPlainObject(proxyEnv) ? '\n' : '') + JSON.stringify(proxyEnv, undefined, 2)
+        );
+    }
 }
 
 // 请求拦截
@@ -86,12 +135,9 @@ function onFulfilledRequest(cfg) {
 
     // 配置开发模式的代理环境
     if (process.env.NODE_ENV === 'development') {
-        const proxyEnv = localStorage.proxyEnv || 'dev';
-        const proxyHost = require('../../mock.proxy');
-        if (proxyHost[proxyEnv]) {
-            cfg.headers = cfg.headers || {};
-            cfg.headers['X-Mock-Proxy'] = proxyHost[proxyEnv];
-        }
+        const Cookies = require('js-cookie');
+        const mockProxy = require('../../mock.proxy');
+        configureProxyEnv(cfg, mockProxy, Cookies);
     }
 
     return cfg;
@@ -149,22 +195,22 @@ export function serviceCreate(config) {
 export const service = serviceCreate();
 
 /** 默认不带参数的Get请求 */
-export function get(url) {
-    return config => service.get(url, config);
+export function get(url, cfg) {
+    return config => service.get(url, merge(cfg, config));
 }
 
 /** 带参数的Get请求 */
-export function getParams(url) {
-    return (params, config) => service.get(url, merge(config, { params }));
+export function getParams(url, cfg) {
+    return (params, config) => service.get(url, merge(cfg, config, { params }));
 }
 
 /** 默认的Post请求 */
-export function post(url) {
-    return (data, config) => service.post(url, data, config);
+export function post(url, cfg) {
+    return (data, config) => service.post(url, data, merge(cfg, config));
 }
 
 /** 请求包装处理（忽略异常） */
-export function requestProcess(request, success, complete) {
+export function requestWrapper(request, success, complete) {
     return request.then(success, () => {}).finally(complete);
 }
 

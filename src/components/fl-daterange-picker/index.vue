@@ -1,5 +1,10 @@
 <template>
-    <el-date-picker v-on="listeners" v-bind="defOptions" v-model="innerValue"></el-date-picker>
+    <el-date-picker
+        v-on="$listeners"
+        v-bind="defOptions"
+        :value="innerValue"
+        @[input]="val => (innerValue = val)"
+    ></el-date-picker>
 </template>
 
 <script>
@@ -23,7 +28,7 @@ export default {
         completionTime: Boolean,
         beforeDate: [String, Date],
         afterDate: [String, Date],
-        width: String,
+        width: [String, Number],
         // Original props
         value: Array,
         pickerOptions: Object,
@@ -49,23 +54,36 @@ export default {
         valueFormat: {
             type: String,
             default() {
+                const { type, completionTime } = this;
                 const dateFormat = ['yyyy', 'MM', 'dd'];
-                switch (this.type) {
-                    case 'monthrange':
+                switch (true) {
+                    case type === 'monthrange':
                         return dateFormat.slice(0, 2).join('-');
-                    case 'datetimerange':
+                    case type === 'datetimerange' || completionTime:
                         return dateFormat.join('-') + ' HH:mm:ss';
                     default:
                         return dateFormat.join('-');
                 }
             },
         },
+        defaultTime: {
+            type: Array,
+            default() {
+                if (this.completionTime) {
+                    return ['00:00:00', '23:59:59'];
+                }
+            },
+        },
     },
     computed: {
-        listeners() {
-            // eslint-disable-next-line no-unused-vars
-            const { input, ...listeners } = this.$listeners;
-            return listeners;
+        input() {
+            let event = 'input';
+
+            if (event in this.$listeners) {
+                event = null;
+            }
+
+            return event;
         },
         defOptions() {
             let pickerOptions = {};
@@ -74,7 +92,7 @@ export default {
             const toLocal = date => (typeof date === 'string' ? date.replace(/-/g, '/') : date);
 
             if (width) {
-                props.style = { width: !Number(width) ? width : width + 'px' };
+                props.style = { width: isNaN(width) ? width : width + 'px' };
             }
 
             if (beforeDate || afterDate) {
@@ -95,23 +113,15 @@ export default {
         },
         innerValue: {
             get() {
-                if (this.$listeners.input) {
-                    return this.value;
+                if (this.input) {
+                    return [this.startTime, this.endTime];
                 }
 
-                return [this.startTime, this.endTime];
+                return this.value;
             },
             set(value) {
-                let [startTime, endTime] = value || ['', ''];
-
-                if (this.completionTime && this.type == 'daterange' && startTime && endTime) {
-                    startTime += ' 00:00:00';
-                    endTime += ' 23:59:59';
-                }
-
-                if (this.$listeners.input) {
-                    this.$emit('input', [startTime, endTime]);
-                } else {
+                if (this.input) {
+                    let [startTime, endTime] = value || ['', ''];
                     this.$emit('update:start-time', startTime);
                     this.$emit('update:end-time', endTime);
                 }

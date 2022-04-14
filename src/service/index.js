@@ -1,5 +1,5 @@
-import { requestProcess, get, getParams, post } from '@/utils/request';
-export { requestProcess };
+import { requestWrapper, get, getParams, post } from '@/utils/request';
+export { requestWrapper };
 
 // @config {headers, emulateJSON, loading, errMsg, noIntercept}
 

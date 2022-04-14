@@ -11,7 +11,7 @@ export default {
     props: {
         beforeDate: [String, Date],
         afterDate: [String, Date],
-        width: String,
+        width: [String, Number],
         // Original props
         value: [String, Date],
         pickerOptions: Object,
@@ -56,7 +56,7 @@ export default {
             const toLocal = date => (typeof date === 'string' ? date.replace(/-/g, '/') : date);
 
             if (width) {
-                props.style = { width: !Number(width) ? width : width + 'px' };
+                props.style = { width: isNaN(width) ? width : width + 'px' };
             }
 
             if (beforeDate || afterDate) {

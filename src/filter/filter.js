@@ -44,10 +44,10 @@ export const datetime = date => dateFormat(date, 'yyyy-MM-dd hh:mm:ss');
 export const number = function(number, precision, thousand) {
     precision = precision || 0;
     thousand = thousand || ',';
-    if (typeof number == 'number' || (number -= 0)) {
-        return (number.toFixed(precision) + '').replace(/\d{1,3}(?=(\d{3})+(\.\d*)?$)/g, '$&' + thousand);
+    if (!isNaN(number)) {
+        return (+number).toFixed(precision).replace(/\d{1,3}(?=(\d{3})+(\.\d*)?$)/g, '$&' + thousand);
     }
-    return '';
+    return number || '';
 };
 
 // 格式化金钱
