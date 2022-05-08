@@ -6,11 +6,10 @@ const LodashWebpackPlugin = require('lodash-webpack-plugin');
 const { GenerateSW } = require('workbox-webpack-plugin');
 const middleware = require('hm-middleware');
 
-// 是否gzip打包
-process.env.GZIP = process.env.npm_config_gzip || 'false';
-// 是否生成service worker
-process.env.VUE_APP_PWA = process.env.npm_config_pwa || 'false';
-// 开发默认代理环境
+const isProduction = process.env.NODE_ENV === 'production';
+const isBuildGzip = process.env.npm_config_gzip || false; // 是否gzip打包
+const isGenerateSW = false; // 是否生成service worker
+process.env.VUE_APP_PWA = isGenerateSW;
 process.env.VUE_APP_PROXYENV = process.env.npm_config_proxyenv || 'dev';
 
 function resolve(dir) {
@@ -60,7 +59,7 @@ module.exports = {
       },
     },
     plugins: [new HardSourceWebpackPlugin(), new LodashWebpackPlugin()].concat(
-      process.env.VUE_APP_PWA === 'true'
+      isProduction && isGenerateSW
         ? new GenerateSW({
             importWorkboxFrom: 'local',
             // runtimeCaching: [
@@ -125,7 +124,7 @@ module.exports = {
       })
     );
 
-    config.when(process.env.NODE_ENV === 'production', config => {
+    config.when(isProduction, config => {
       config.plugin('html').tap(args =>
         args.map(arg =>
           _.merge(arg, {
@@ -152,7 +151,7 @@ module.exports = {
       );
 
       // gzip压缩文件
-      if (process.env.GZIP === 'true') {
+      if (isBuildGzip) {
         config.plugin('compressionPlugin').use(
           new CompressionWebpackPlugin({
             test: /\.(js|css|json|ico|svg)(\?.*)?$/i,

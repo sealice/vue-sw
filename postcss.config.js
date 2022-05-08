@@ -1,9 +1,9 @@
-const IN_PRODUCTION = process.env.NODE_ENV === 'production' && false;
+const isProduction = process.env.NODE_ENV === 'production';
 
 module.exports = {
   plugins: [
     require('autoprefixer'),
-    IN_PRODUCTION &&
+    isProduction &&
       require('@fullhuman/postcss-purgecss')({
         content: ['./public/**/*.html', './src/**/*.vue'],
         defaultExtractor(content) {
@@ -19,26 +19,27 @@ module.exports = {
                 }
               });
             } else if (s) {
-              const match = a.match(/[\w-/:]+(?<!:)/g);
-              match && selectors.push(...match);
+              const match = a.match(/[\w-]+(?<!:)/g);
+              if (match) {
+                match.forEach(item => {
+                  selectors.includes(item) || selectors.push(item);
+                });
+              }
             }
           });
 
           return selectors;
         },
-        whitelist: ['class', 'circular'],
-        whitelistPatterns: [
-          /-(leave|enter|appear)(|-(to|from|active))$/,
-          /^(?!(|.*?:)cursor-move).+-move$/,
-          /^router-link(|-exact)-active$/,
-          /data-v-.*/,
-          // element-ui
-          /(link|dark|arrow)/,
-          /el-(form|input|select|radio|checkbox|switch|date|button|tag|link)/,
-          /el-(alert|loading|message|notification|dialog|tooltip|popover|scrollbar)/,
-          /el-(table|pagination|breadcrumb|dropdown|card|menu|submenu)/,
-          /el-icon-(menu|plus|minus|arrow|caret|circle|time|date|star|search|back|close|check|success|info|warning|error|question)/,
-        ],
+        safelist: {
+          standard: [
+            /-(leave|enter|appear)(|-(to|from|active))$/,
+            /^(?!(|.*?:)cursor-move).+-move$/,
+            /^router-link(|-exact)-active$/,
+            /data-v-.*/,
+            'class',
+          ],
+          deep: [/el-.*/],
+        },
       }),
   ],
 };
